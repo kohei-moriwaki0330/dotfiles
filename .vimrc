@@ -54,34 +54,72 @@ set helplang=ja " Setting the help language
 
 " Plugins {{{
 runtime! plugins/*.vim
+
+" Unite {{
 NeoBundleLazy 'Shougo/unite.vim', {'on_cmd' : 'Unite'}
 NeoBundleLazy 'Shougo/neomru.vim', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'tsukkee/unite-help', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'ujihisa/unite-colorscheme', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'hewes/unite-gtags', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'vim-jp/vimdoc-ja'
-
-" Command:
-" 1.gci:文の頭からコメントアウト
-" 2.gcI:行頭からコメントアウト
-" 3.gca:行末にコメントアウト
-" 4.gco:カーソル行の下にコメントアウト
-" 5.gcO:カーソル行の上にコメントアウト
-" Help: caw-introduction
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'haya14busa/vim-asterisk'
-NeoBundleLazy 'kana/vim-operator-user'
-NeoBundleLazy 'kana/vim-textobj-user'
-NeoBundleLazy 'sgur/vim-textobj-parameter'
-NeoBundleLazy 'kana/vim-textobj-indent'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
     \ 'depends' : 'Shougo/unite.vim',
     \ 'on_path' : '.*',
     \ }
-NeoBundle 'tomasr/molokai'
+NeoBundleLazy 'osyo-manga/unite-fold', {
+    \   'autoload'  : {
+    \   'unite_sources'  : [
+    \   'fold'
+    \   ],
+    \   }
+    \   }
+NeoBundleLazy 'osyo-manga/unite-quickfix', {
+    \   'autoload'  : {
+    \   'unite_sources'  : [
+    \   'quickfix'
+    \   ],
+    \   }
+    \   }
+NeoBundleLazy 'tsukkee/unite-help', {'on_source' : 'unite.vim'}
+NeoBundleLazy 'ujihisa/unite-colorscheme', {'on_source' : 'unite.vim'}
+NeoBundleLazy 'hewes/unite-gtags', {'on_source' : 'unite.vim'}
+" }}
+
+" Document {{
+NeoBundle 'vim-jp/vimdoc-ja'
+"}}
+
+" Writing {{
+NeoBundleLazy 'Shougo/neocomplete.vim'
+NeoBundleLazy 'Shougo/neosnippet.vim'
+NeoBundleLazy 'tyru/caw.vim', {
+    \   'autoload' : {
+    \   'mappings' : ['<Plug>(caw:'],
+    \   }
+    \   }
+"}}
+
+" Text Object {{
+NeoBundleLazy 'kana/vim-operator-user'
+NeoBundleLazy 'kana/vim-textobj-user'
+NeoBundleLazy 'kana/vim-textobj-indent'
+NeoBundleLazy 'sgur/vim-textobj-parameter'
+"}}
+
+" UI {{
+NeoBundleLazy 'nathanaelkane/vim-indent-guides', {
+    \   'autoload'  : {
+    \   'commands'  : [
+    \   'IndentGuidesToggle',
+    \   ]},
+    \   }
 NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'osyo-manga/vim-brightest'
+"}}
+
+" Colorscheme {{
+NeoBundle 'tomasr/molokai'
+"}}
+
+" Extend Basic Vim Commands {{
+NeoBundle 'haya14busa/vim-asterisk'
+"}}
 
 call neobundle#end()
 " }}} End of Plugins
@@ -140,9 +178,10 @@ if neobundle#tap('unite.vim')
     nnoremap <silent> [Unite]b :<C-u>Unite -silent buffer file_mru bookmark<CR>
     nnoremap <silent> [Unite]r :<C-u>UniteResume<CR>
     nnoremap <silent> [Unite]g :<C-u>Unite -silent -no-quit grep<CR>
-    nnoremap <silent> [Unite]r :<C-u>Uniteruntimepath<CR>
-    nnoremap <silent> [Unite]c :<C-u>Unite<Space>-auto-preview colorscheme<CR>
+    nnoremap <silent> [Unite]r :<C-u>Unite runtimepath<CR>
+    nnoremap <silent> [Unite]c :<C-u>Unite -auto-preview colorscheme<CR>
     nnoremap <silent> [Unite]s :<C-u>Unite source<CR>
+    nnoremap <silent> [Unite]h :<C-u>Unite help<CR>
     nnoremap <silent> [Unite]ma :<C-u>Unite -silent mapping<CR>
     nnoremap <silent> [Unite]me :<C-u>Unite -silent output:message<CR>
 
@@ -164,9 +203,11 @@ endif
 
 " Shougo/vimfiler {{
 if neobundle#tap('vimfiler.vim')
+    function! neobundle#tapped.hooks.on_source(bundle) "{
+        let g:vimfiler_as_default_explorer=1
+        let g:vimfiler_fource_overwrite_statusline=0
+    endfunction "}
     autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
-    let g:vimfiler_as_default_explorer=1
-    let g:vimfiler_fource_overwrite_statusline=0
     "VimFiler Mapping List
     nnoremap <silent> <Leader>vi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
     call neobundle#untap()
@@ -175,11 +216,21 @@ endif
 
 " tomasr/molokai {{
 if neobundle#tap('molokai')
-    syntax on
+    syntax enable
     set background=dark
-    let g:molokai_original=1
-    let g:rehash256=1
-    colorscheme molokai
+    set t_Co=256
+    if &t_Co < 256
+        colorscheme default
+    else
+        try
+            colorscheme molokai
+        catch
+            colorscheme desert
+        endtry
+    endif
+
+    function! neobundle#tapped.hooks.on_source(bundle) "{
+    endfunction "}
     call neobundle#untap()
 endif
 "}}
@@ -194,31 +245,40 @@ if neobundle#tap('lightline.vim')
           \   'mode': 'LightLineMode'
           \ }
           \ }
-    function! LightLineMode()
+    function! neobundle#tapped.hooks.on_source(bundle) "{
+        let g:unite_sorce_overwrite_statusline=0
+        let g:vimfiler_force_overwrite_statusline=0
+    endfunction "}
+
+    function! LightLineMode() "{
           return  &ft == 'unite' ? 'Unite' :
                   \ &ft == 'vimfiler' ? 'VimFiler' :
                   \ winwidth(0) > 60 ? lightline#mode() : ''
-      endfunction
+      endfunction "}
     call neobundle#untap()
 endif
 "}}
 
 " nathanaelkane/vim-indent-guides {{
 if neobundle#tap('vim-indent-guides')
+    function! neobundle#tapped.hooks.on_source(bundle) "{
     "vim立ち上げ時に、自動的にvim-indent-guidesをオン
-    let g:indent_guides_enable_on_vim_startup=1
+    let g:indent_guides_enable_on_vim_startup=0
+    "ガイドの幅
+    let g:indent_guides_guide_size=1
+    "自動カラーを有効にする
+    let g:indent_guides_auto_colors=1
     "guideをスタートするインデント量
     let g:indent_guides_start_level=2
-    "自動カラーを無効にする
-    let g:indent_guides_auto_colors=0
+    "ハイライト色の変化の幅
+    let g:indent_guides_color_change_percent=20
+    let g:indent_guides_default_mapping=0
     "奇数インデントのカラー
     autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=#262626 ctermbg=gray
     "偶数のインデントのカラー
     autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgray
-    "ハイライト色の変化の幅
-    let g:indent_guides_color_change_percent=30
-    "ガイドの幅
-    let g:indent_guides_guide_size=1
+    endfunction "}
+    nnoremap <Leader>i :<C-u>IndentGuidesToggle<CR>
     call neobundle#untap()
 endif
 " }}
@@ -231,7 +291,7 @@ if neobundle#tap('vim-brightest')
         \}
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " haya14busa/vim-asterisk {{
 if neobundle#tap('vim-asterisk')
@@ -243,7 +303,34 @@ if neobundle#tap('vim-asterisk')
 "    map g# <Plug> (asterisk-gz#)
     call neobundle#untap()
 endif
-"}}
+" }}
+
+" tyru/caw.vim {{
+if neobundle#tap('caw.vim')
+    function! neobundle#tapped.hooks.on_source(bundle) "{
+        let g:caw_no_default_keymappings=1
+    endfunction "}
+
+    " Beggining of Line Comment Toggle
+    nmap <Leader>cc <Plug>(caw:hatpos:toggle)
+    vmap <Leader>cc <Plug>(caw:hatpos:toggle)
+    nmap <Leader>ci <Plug>(caw:hatpos:toggle)
+    vmap <Leader>ci <Plug>(caw:hatpos:toggle)
+
+    " End of Line Comment Toggle
+    nmap <Leader>ca <Plug>(caw:dollarpos:toggle)
+    vmap <Leader>ca <Plug>(caw:dollarpos:toggle)
+
+    " Bloak Comment Toggle
+    nmap <Leader>cw <Plug>(caw:wrap:toggle)
+    vmap <Leader>cw <Plug>(caw:wrap:toggle)
+
+    "Break line and Comment
+    nmap <Leader>co <Plug>(caw:jump:comment-next)
+    nmap <Leader>cO <Plug>(caw:jump:comment-prev)
+    call neobundle#untap()
+endif
+" }}
 
 " }}} End of Unite Setting List
 
