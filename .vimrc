@@ -61,8 +61,6 @@ NeoBundleLazy 'ujihisa/unite-colorscheme', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'hewes/unite-gtags', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'vim-jp/vimdoc-ja'
 
-" [Operator]
-" コメントアウト/コメントアウト解除
 " Command:
 " 1.gci:文の頭からコメントアウト
 " 2.gcI:行頭からコメントアウト
