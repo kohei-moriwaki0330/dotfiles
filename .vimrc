@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 22-May-2016.
+" Last Modified: 24-May-2016.
 
 " Prefix {{{
 " Leader
@@ -14,9 +14,12 @@ noremap [Leader]<LocalLeader> <Nop>
 " Unite
 nnoremap [Unite] <Nop>
 nmap , [Unite]
-" Tag
-nnoremap [Tag] <Nop>
-nmap t [Tag]
+" Tab
+nnoremap [Tab] <Nop>
+nmap t [Tab]
+" Cscope
+noremap [Cscope] <Nop>
+nmap <C-\> [Cscope]
 " }}} End of Prefix
 
 " release autogroup in MyAutoCmd {{{
@@ -34,45 +37,46 @@ endif
 call neobundle#begin(expand('~/.vim/bundle'))
 " }}} End of NeoBundle
 
+
 " Basic {{{
-set encoding=japan "Sets the character encoding used inside Vim
-set fileencodings=japan,utf-0,euc-jp,sjis "A list of character encodings
-set fileformats=unix,dos " This gives the end-of-line(<EOL>) formats
-set title "Sets the title used inside Vim
-set expandtab "Use the appropriate number of spaces to insert a <Tab>
-set tabstop=4 "Number of spaces that a <Tab> in the file counts for
-set shiftwidth=4 "Number of spaces to use for each step of (auto)indent
-set list listchars=tab:>-,trail:-,extends:>,precedes:<
+set encoding=japan "Sets the character encoding used inside Vim.
+set fileencodings=japan,utf-0,euc-jp,sjis "A list of character encodings.
+set fileformats=unix,dos " This gives the end-of-line(<EOL>) formats.
+set title "Sets the title used inside Vim.
+set expandtab "Use the appropriate number of spaces to insert a <Tab>.
+set tabstop=4 "Number of spaces that a <Tab> in the file counts for.
+set shiftwidth=4 "Number of spaces to use for each step of (auto)indent.
+set list listchars=tab:>-,trail:-,extends:>,precedes:< "Use the same symbols as TextMate for tabstops
 set cinoptions=:0,p0,t0
 set cinwords=if,else,while,do,for,switch,case
-set number
-set smartindent
-set hlsearch
+set number "Setting Column Number
+set smartindent "Copy indent from current line when starting a new line.
+set hlsearch | nohlsearch "Highlight search patterns, suport reloading.
 set infercase " Ignore case on insert completion.
-set incsearch " From before you confirm with the enter key, or do a search
-set ignorecase " It doesn't distinguish with upper / lower character
-set smartcase " Override the ignorecase option if the pattern contains upper case
-set wrap "Lines longer than the width of the window will wrap
-set wrapscan " Searches wrap around the end of the file
-set laststatus=2 showtabline=2 " Always dispaly statusline/tabline
-set display=lastline " Display as much as possible of the last line
-set noequalalways " Don't auto resize Window
-set showcmd " Display input command
-set showmatch "Briefly jump to the matching one
-set ttytype=builtin_xterm " Setting the terminal type
-set helplang=ja " Setting the help language
-set background=dark
-set t_Co=256
-set nobackup " Don't make a backup file before overwriting a file"
-set noswapfile " Don't make a swap file before overwriting a file"
-set autoread "Automatically read file again which has been changed outside of Vim
-set cmdheight=1 "Number of screen lines to use for the command-line
-set cmdwinheight=5 "Number of screen lines to use for the command-line window
-set grepprg=internal "Program to use for the :grep command
+set incsearch " From before you confirm with the enter key, or do a search.
+set ignorecase " It doesn't distinguish with upper / lower character.
+set smartcase " Override the ignorecase option if the pattern contains upper case.
+set wrap "Lines longer than the width of the window will wrap.
+set wrapscan " Searches wrap around the end of the file.
+set laststatus=2 showtabline=2 " Always dispaly statusline/tabline.
+set display=lastline " Display as much as possible of the last line.
+set noequalalways " Don't auto resize Window.
+set showcmd " Display input command.
+set showmatch "Briefly jump to the matching one.
+set ttytype=builtin_xterm " Setting the terminal type.
+set helplang=ja " Setting the help language.
+set background=dark "Setting the Vim background.
+set t_Co=256 "Enable 256 colors forcely on screen
+set nobackup " Don't make a backup file before overwriting a file.
+set noswapfile " Don't make a swap file before overwriting a file.
+set autoread "Automatically read file again which has been changed outside of Vim.
+set cmdheight=1 "Number of screen lines to use for the command-line.
+set cmdwinheight=5 "Number of screen lines to use for the command-line window.
+set grepprg=internal "Program to use for the :grep command.
 set hidden " Display anather buffer when current buffer isn't saved.
-set keywordprg=:help " Open Vim internal help by K command
-set shortmess& shortmess+=I "Don't give the message when starting Vim :into
-set spelllang=en,cjk "Spell checking language
+set keywordprg=:help " Open Vim internal help by K command.
+set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
+set spelllang=en,cjk "Spell checking language.
 syntax enable
 
 " }}} End of Basic
@@ -144,33 +148,11 @@ NeoBundle 'tomasr/molokai'
 
 " Extend Basic Vim Commands {{
 NeoBundle 'haya14busa/vim-asterisk'
+NeoBundle 'vim-scripts/sudo.vim'
 "}}
 
 call neobundle#end()
 " }}} End of Plugins
-
-" Cscope {{{
-cs add ~/kanno/Tool/.cscope/View/cscope.out
-cs add ~/kanno/Tool/.cscope/Model/cscope.out
-cs add ~/kanno/Tool/.cscope/Etc/cscope.out
-cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
-"   's'   symbol: find all references to the token under cursor
-"   'g'   global: find global definition(s) of the token under cursor
-"   'c'   calls:  find all calls to the function name under cursor
-"   't'   text:   find all instances of the text under cursor
-"   'e'   egrep:  egrep search for the word under cursor
-"   'f'   file:   open the filename under cursor
-"   'i'   includes: find files that include the filename under cursor
-"   'd'   called: find functions that function under cursor calls
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-" }}} End of Cscope
 
 " Unite Setting List{{{
 " Shougo/unite.vim {{
@@ -241,8 +223,8 @@ endif
 
 " tomasr/molokai {{
 if neobundle#tap('molokai')
-    if &t_Co < 256
-        colorscheme default
+    if $COLORTERM == 'gnome-terminal'
+        colorscheme peachpuff
     else
         try
             colorscheme molokai
@@ -354,21 +336,64 @@ if neobundle#tap('caw.vim')
 endif
 " }}
 
+" vim-scripts/sudo.vim {{
+if neobundle#tap('sudo.vim')
+    nnoremap <Leader>su :<C-u>e sudo:%<CR>
+
+    call neobundle#untap()
+endif
+"}}
+
 " }}} End of Unite Setting List
 
 " Etc Setting List {{{
+
+" Cscope add{{
+cs add ~/kanno/Tool/.cscope/View/cscope.out
+cs add ~/kanno/Tool/.cscope/Model/cscope.out
+cs add ~/kanno/Tool/.cscope/Etc/cscope.out
+cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
+"}}
+
+" Cscope KeyMaps {{
+"   's'   symbol: find all references to the token under cursor
+"   'g'   global: find global definition(s) of the token under cursor
+"   'c'   calls:  find all calls to the function name under cursor
+"   't'   text:   find all instances of the text under cursor
+"   'e'   egrep:  egrep search for the word under cursor
+"   'f'   file:   open the filename under cursor
+"   'i'   includes: find files that include the filename under cursor
+"   'd'   called: find functions that function under cursor calls
+nmap [Cscope]s :tab cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]g :tab cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]c :tab cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]t :tab cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]e :tab cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]f :tab cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap [Cscope]i :tab cs find i <C-R>=expand("<cfile>")<CR><CR>
+nmap [Cscope]d :tab cs find d <C-R>=expand("<cword>")<CR><CR>
+" }}
+
+" Set relativenumber or no relativenumber.
 nnoremap <silent> <Leader>rel :<C-u>set relativenumber! relativenumber?<CR>
+
 " .vimrc Mapping List
-nmap <silent> <Leader>rc :vs ~/.vimrc<CR>
-" タブ関連 Mapping List
-map <silent> [Tag]c :tablast <bar> tabnew .<CR>
-map <silent> [Tag]x :tabclose<CR>
-map <silent> [Tag]n :tabnext<CR>
-map <silent> [Tag]p :tabprevious<CR>
+nnoremap <silent> <Leader>rc :vs ~/.vimrc<CR>
+
+" Tab KeyMaps {{
+nnoremap <silent> [Tab]c :tablast <bar> tabnew %<CR>
+nnoremap <silent> [Tab]f :tablast <bar> tabnew .<CR>
+nnoremap <silent> [Tab]d :tabclose<CR>
+nnoremap <silent> [Tab]n :tabnext<CR>
+nnoremap <silent> [Tab]p :tabprevious<CR>
+" }}
+
+" Tab jump {{
 for n in range(1,9)
-    "t1で1番左のタブ,t2で1番左から2番目のタブにジャンプ
-    execute 'nnoremap <silent> [Tag]'.n ':<C-u>tabnext'.n.'<CR>'
+    execute 'nnoremap <silent> [Tab]'.n ':<C-u>tabnext'.n.'<CR>'
 endfor
+" }}
+
 " gfの結果をタブ複製にする
 nnoremap gf :<C-u>execute 'tabfind ' .expand('<cfile>')<CR>
 
