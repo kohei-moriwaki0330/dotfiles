@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 24-May-2016.
+" Last Modified: 26-May-2016.
 
 " Prefix {{{
 " Leader
@@ -77,7 +77,7 @@ set hidden " Display anather buffer when current buffer isn't saved.
 set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
-syntax enable
+syntax enable "Setting the Syntax
 
 " }}} End of Basic
 
@@ -122,6 +122,11 @@ NeoBundleLazy 'tyru/caw.vim', {
     \   'mappings' : ['<Plug>(caw:'],
     \   }
     \   }
+NeoBundleLazy 'h1mesuke/vim-alignta'
+"}}
+
+" Development {{
+NeoBundleLazy 'scrooloose/syntastic'
 "}}
 
 " Text Object {{
@@ -146,10 +151,21 @@ NeoBundle 'osyo-manga/vim-brightest'
 NeoBundle 'tomasr/molokai'
 "}}
 
+" Motion {{
+NeoBundleLazy 'haya14busa/vim-easymotion'
+NeoBundleLazy 'haya14busa/vim-easyoperator-line'
+NeoBundleLazy 'haya14busa/vim-easyoperator-phrase'
+NeoBundleLazy 'haya14busa/vim-lazy-lines'
+" }}
+
 " Extend Basic Vim Commands {{
 NeoBundle 'haya14busa/vim-asterisk'
 NeoBundle 'vim-scripts/sudo.vim'
+NeoBundleLazy 'sjl/gundo.vim'
+NeoBundleLazy 'osyo-manga/vim-anzu'
+NeoBundleLazy 'osyo-manga/vim-over'
 "}}
+filetype plugin indent on
 
 call neobundle#end()
 " }}} End of Plugins
