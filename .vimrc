@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 26-May-2016.
+" Last Modified: 27-May-2016.
 
 " Prefix {{{
 " Leader
@@ -36,7 +36,6 @@ if has('vim_starting')
 endif
 call neobundle#begin(expand('~/.vim/bundle'))
 " }}} End of NeoBundle
-
 
 " Basic {{{
 set encoding=japan "Sets the character encoding used inside Vim.
@@ -77,6 +76,8 @@ set hidden " Display anather buffer when current buffer isn't saved.
 set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
+set relativenumber "Setting relativenumber
+"set cscopeprg=gtags-cscope
 syntax enable "Setting the Syntax
 
 " }}} End of Basic
@@ -152,7 +153,12 @@ NeoBundle 'tomasr/molokai'
 "}}
 
 " Motion {{
-NeoBundleLazy 'haya14busa/vim-easymotion'
+NeoBundleLazy 'Lokaltog/vim-easymotion', {
+    \   'autoload'  : {
+    \   'mappings'  : [['sxno', '<Plug>(easymotion-']],
+    \   'functions' : ['EasyMotion#User','EasyMotion#is_active',],
+    \   },
+    \   }
 NeoBundleLazy 'haya14busa/vim-easyoperator-line'
 NeoBundleLazy 'haya14busa/vim-easyoperator-phrase'
 NeoBundleLazy 'haya14busa/vim-lazy-lines'
@@ -165,7 +171,7 @@ NeoBundleLazy 'sjl/gundo.vim'
 NeoBundleLazy 'osyo-manga/vim-anzu'
 NeoBundleLazy 'osyo-manga/vim-over'
 "}}
-filetype plugin indent on
+"filetype plugin indent on
 
 call neobundle#end()
 " }}} End of Plugins
@@ -240,7 +246,7 @@ endif
 " tomasr/molokai {{
 if neobundle#tap('molokai')
     if $COLORTERM == 'gnome-terminal'
-        colorscheme peachpuff
+        colorscheme default
     else
         try
             colorscheme molokai
@@ -355,10 +361,42 @@ endif
 " vim-scripts/sudo.vim {{
 if neobundle#tap('sudo.vim')
     nnoremap <Leader>su :<C-u>e sudo:%<CR>
-
     call neobundle#untap()
 endif
 "}}
+
+" vim-easymotion
+if neobundle#tap('vim-easymotion')
+    function! neobundle#tapped.hooks.on_post_source(bundle)
+        EMCommandLineNoreMap <Space> <CR>
+        EMCommandLineNoreMap <C-j> <Space>
+    endfunction
+
+    function! neobundle#tapped.hooks.on_source(bundle)
+        let g:EasyMotion_do_mapping=0
+        let g:EasyMotion_keys=';hklyuiopnm,qwertzxcvbasdgjf'
+        let g:EasyMotion_use_upper=1
+        let g:EasyMotion_smartcase=1
+        let g:EasyMotion_use_smartsign_us=1
+        let g:EasyMotion_startofline=0
+        let g:EasyMotion_skipfoldedline=0
+        let g:EasyMotion_use_migemo=1
+        let g:EasyMotion_enter_jump_first=1
+        let g:EasyMotion_space_jump_first=1
+        let g:EasyMotion_prompt='Target Keys> '
+        let g:EasyMotion_cursor_highlight=1
+        hi EasyMotionTarget guifg=#80a0ff ctermfg=81
+    endfunction
+
+      nmap s <Plug>(easymotion-s)
+      vmap s <Plug>(easymotion-s)
+      omap s <Plug>(easymotion-s)
+      map <Leader>j <Plug>(easymotion-j)
+      map <Leader>k <Plug>(easymotion-k)
+      map <Space><Space> <Plug>(easymotion-jumptoanywhere)
+
+    call neobundle#untap()
+endif
 
 " }}} End of Unite Setting List
 
@@ -368,10 +406,13 @@ endif
 cs add ~/kanno/Tool/.cscope/View/cscope.out
 cs add ~/kanno/Tool/.cscope/Model/cscope.out
 cs add ~/kanno/Tool/.cscope/Etc/cscope.out
+cs add ~/kanno/Tool/.cscope/Framework/cscope.out
 cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
+"cs add ~/kanno/Tool/.gtags/Atc/GTAGS
+"cs add ~/kanno/Tool/.gtags/Nmsystem/GTAGS
 "}}
 
-" Cscope KeyMaps {{
+" Cscope KeyMaphaya14busas {{
 "   's'   symbol: find all references to the token under cursor
 "   'g'   global: find global definition(s) of the token under cursor
 "   'c'   calls:  find all calls to the function name under cursor
@@ -419,4 +460,3 @@ autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
 " Bufferが呼ばれたときに、選択したBufferに移動する
 au BufEnter * execute ":lcd " . expand("%:p:h")
 "}}} End of Etc Setting List
-
