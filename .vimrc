@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 27-May-2016.
+" Last Modified: 28-May-2016.
 
 " Prefix {{{
 " Leader
@@ -153,15 +153,13 @@ NeoBundle 'tomasr/molokai'
 "}}
 
 " Motion {{
+NeoBundleLazy 'haya14busa/incsearch.vim'
 NeoBundleLazy 'Lokaltog/vim-easymotion', {
     \   'autoload'  : {
     \   'mappings'  : [['sxno', '<Plug>(easymotion-']],
     \   'functions' : ['EasyMotion#User','EasyMotion#is_active',],
     \   },
     \   }
-NeoBundleLazy 'haya14busa/vim-easyoperator-line'
-NeoBundleLazy 'haya14busa/vim-easyoperator-phrase'
-NeoBundleLazy 'haya14busa/vim-lazy-lines'
 " }}
 
 " Extend Basic Vim Commands {{
@@ -176,7 +174,6 @@ NeoBundleLazy 'osyo-manga/vim-over'
 call neobundle#end()
 " }}} End of Plugins
 
-" Unite Setting List{{{
 " Shougo/unite.vim {{
 if neobundle#tap('unite.vim')
     function! neobundle#tapped.hooks.on_source(bundle)
@@ -236,12 +233,13 @@ if neobundle#tap('vimfiler.vim')
         let g:vimfiler_as_default_explorer=1
         let g:vimfiler_fource_overwrite_statusline=0
     endfunction "}
+
     autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
     "VimFiler Mapping List
     nnoremap <silent> <Leader>vi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " tomasr/molokai {{
 if neobundle#tap('molokai')
@@ -254,12 +252,9 @@ if neobundle#tap('molokai')
             colorscheme desert
         endtry
     endif
-
-    function! neobundle#tapped.hooks.on_source(bundle) "{
-    endfunction "}
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " itchyny/lightline.vim {{
 if neobundle#tap('lightline.vim')
@@ -283,7 +278,7 @@ if neobundle#tap('lightline.vim')
       endfunction "}
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " nathanaelkane/vim-indent-guides {{
 if neobundle#tap('vim-indent-guides')
@@ -363,9 +358,17 @@ if neobundle#tap('sudo.vim')
     nnoremap <Leader>su :<C-u>e sudo:%<CR>
     call neobundle#untap()
 endif
-"}}
+" }}
 
-" vim-easymotion
+" haya14busa/incsearch.vim {{
+if neobundle#tap('incsearch.vim')
+    noremap <silent> <expr> g/ incsearch#go({'command':'/','is_stay':1})
+    noremap <silent> <expr> g? incsearch#go({'command':'?','is_stay':1})
+    call neobundle#untap()
+endif
+" }}
+
+" Lokaltog/vim-easymotion {{
 if neobundle#tap('vim-easymotion')
     function! neobundle#tapped.hooks.on_post_source(bundle)
         EMCommandLineNoreMap <Space> <CR>
@@ -388,17 +391,10 @@ if neobundle#tap('vim-easymotion')
         hi EasyMotionTarget guifg=#80a0ff ctermfg=81
     endfunction
 
-      nmap s <Plug>(easymotion-s)
-      vmap s <Plug>(easymotion-s)
-      omap s <Plug>(easymotion-s)
-      map <Leader>j <Plug>(easymotion-j)
-      map <Leader>k <Plug>(easymotion-k)
-      map <Space><Space> <Plug>(easymotion-jumptoanywhere)
-
+    map <Leader><Space> <Plug>(easymotion-jumptoanywhere)
     call neobundle#untap()
 endif
-
-" }}} End of Unite Setting List
+" }}
 
 " Etc Setting List {{{
 
@@ -459,4 +455,5 @@ autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
 
 " Bufferが呼ばれたときに、選択したBufferに移動する
 au BufEnter * execute ":lcd " . expand("%:p:h")
+
 "}}} End of Etc Setting List
