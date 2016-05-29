@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 28-May-2016.
+" Last Modified: 29-May-2016.
 
 " Prefix {{{
 " Leader
@@ -391,6 +391,8 @@ if neobundle#tap('vim-easymotion')
         hi EasyMotionTarget guifg=#80a0ff ctermfg=81
     endfunction
 
+    map <Leader>j <Plug>(easymotion-j)
+    map <Leader>k <Plug>(easymotion-k)
     map <Leader><Space> <Plug>(easymotion-jumptoanywhere)
     call neobundle#untap()
 endif
