@@ -3,7 +3,7 @@
 " Last Modified: 29-May-2016.
 
 " Prefix {{{
-" Leader
+" Leader {{
 let g:mapleader='[Leader]'
 let g:maplocalleader="<Space>"
 noremap [Leader] <Nop>
@@ -11,15 +11,19 @@ map <Space> [Leader]
 noremap [Leader]<Space> <Nop>
 map <LocalLeader> [Leader]
 noremap [Leader]<LocalLeader> <Nop>
-" Unite
+" }}
+" Unite {{
 nnoremap [Unite] <Nop>
 nmap , [Unite]
-" Tab
+" }}
+" Tab {{
 nnoremap [Tab] <Nop>
 nmap t [Tab]
-" Cscope
+" }}
+" Cscope {{
 noremap [Cscope] <Nop>
 nmap <C-\> [Cscope]
+" }}
 " }}} End of Prefix
 
 " release autogroup in MyAutoCmd {{{
@@ -77,7 +81,7 @@ set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
 set relativenumber "Setting relativenumber
-"set cscopeprg=gtags-cscope
+"set cscopeprg=gtags-cscope "Specifies the command to execute cscope
 syntax enable "Setting the Syntax
 
 " }}} End of Basic
@@ -169,7 +173,6 @@ NeoBundleLazy 'sjl/gundo.vim'
 NeoBundleLazy 'osyo-manga/vim-anzu'
 NeoBundleLazy 'osyo-manga/vim-over'
 "}}
-"filetype plugin indent on
 
 call neobundle#end()
 " }}} End of Plugins
@@ -195,6 +198,8 @@ if neobundle#tap('unite.vim')
         let g:unite_source_file_mru_limit=50
         "縦分割で開く
         let g:unite_enable_split_vertically=1
+        "右で開く
+        let g:unite_split_rule='botright'
         "横幅50で開く
         let g:unite_winwidth=50
     endfunction
@@ -212,20 +217,20 @@ if neobundle#tap('unite.vim')
     nnoremap <silent> [Unite]me :<C-u>Unite -silent output:message<CR>
 
     autocmd FileType unite call s:unite_my_settings()
-    function! s:unite_my_settings()"{{{
+    function! s:unite_my_settings()
         imap <buffer> jj <Plug>(unite_insert_leave)
         nmap <buffer> <ESC> <Plug>(unite_exit)
-    endfunction"}}}
+    endfunction
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " ujihisa/unite-colorscheme {{
 if neobundle#tap('unite-colorscheme')
     command! -nargs=* BeautifulAttack Unite colorscheme -auto-preview -winheight=3
     call neobundle#untap()
 endif
-"}}
+" }}
 
 " Shougo/vimfiler {{
 if neobundle#tap('vimfiler.vim')
@@ -236,7 +241,7 @@ if neobundle#tap('vimfiler.vim')
 
     autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
     "VimFiler Mapping List
-    nnoremap <silent> <Leader>vi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+    nnoremap <silent> <Leader>vi :<C-u>VimFilerBufferDir -direction=botright -split -simple -winwidth=40 -no-quit<CR>
     call neobundle#untap()
 endif
 " }}
@@ -266,16 +271,16 @@ if neobundle#tap('lightline.vim')
           \   'mode': 'LightLineMode'
           \ }
           \ }
-    function! neobundle#tapped.hooks.on_source(bundle) "{
+    function! neobundle#tapped.hooks.on_source(bundle)
         let g:unite_sorce_overwrite_statusline=0
         let g:vimfiler_force_overwrite_statusline=0
-    endfunction "}
+    endfunction
 
-    function! LightLineMode() "{
+    function! LightLineMode()
           return  &ft == 'unite' ? 'Unite' :
                   \ &ft == 'vimfiler' ? 'VimFiler' :
                   \ winwidth(0) > 60 ? lightline#mode() : ''
-      endfunction "}
+    endfunction
     call neobundle#untap()
 endif
 " }}
@@ -307,7 +312,7 @@ endif
 "  osyo-manga/vim-brightest {{
 if neobundle#tap('vim-brightest')
     " ui.hを有効にする
-    let g:brightest#enable_filetypes= {
+    let g:brightest#enable_filetypes={
         \ "ui.h" : 1 
         \}
     call neobundle#untap()
@@ -328,9 +333,9 @@ endif
 
 " tyru/caw.vim {{
 if neobundle#tap('caw.vim')
-    function! neobundle#tapped.hooks.on_source(bundle) "{
+    function! neobundle#tapped.hooks.on_source(bundle)
         let g:caw_no_default_keymappings=1
-    endfunction "}
+    endfunction
 
     " Beggining of Line Comment Toggle
     nmap <Leader>cc <Plug>(caw:hatpos:toggle)
@@ -400,7 +405,7 @@ endif
 
 " Etc Setting List {{{
 
-" Cscope add{{
+" Cscope add {{
 cs add ~/kanno/Tool/.cscope/View/cscope.out
 cs add ~/kanno/Tool/.cscope/Model/cscope.out
 cs add ~/kanno/Tool/.cscope/Etc/cscope.out
@@ -408,7 +413,7 @@ cs add ~/kanno/Tool/.cscope/Framework/cscope.out
 cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
 "cs add ~/kanno/Tool/.gtags/Atc/GTAGS
 "cs add ~/kanno/Tool/.gtags/Nmsystem/GTAGS
-"}}
+" }}
 
 " Cscope KeyMaphaya14busas {{
 "   's'   symbol: find all references to the token under cursor
