@@ -196,12 +196,10 @@ if neobundle#tap('unite.vim')
         let g:unite_source_file_mru_filename_format=' '
         "最近開いたファイル履歴の保存数
         let g:unite_source_file_mru_limit=50
-        "縦分割で開く
-        let g:unite_enable_split_vertically=1
-        "右で開く
+        "横分割で開く
+        let g:unite_enable_split_vertically=0
+        "下(右)に開く
         let g:unite_split_rule='botright'
-        "横幅50で開く
-        let g:unite_winwidth=50
     endfunction
 
     nnoremap <silent> [Unite]u :<C-u>Unite<CR>
@@ -219,6 +217,8 @@ if neobundle#tap('unite.vim')
     autocmd FileType unite call s:unite_my_settings()
     function! s:unite_my_settings()
         imap <buffer> jj <Plug>(unite_insert_leave)
+        imap <buffer> kk <Plug>(unite_insert_leave)
+        nmap <buffer> i <Plug>(unite_normal_leave)
         nmap <buffer> <ESC> <Plug>(unite_exit)
     endfunction
     call neobundle#untap()
