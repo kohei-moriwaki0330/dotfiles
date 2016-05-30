@@ -1,11 +1,11 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 29-May-2016.
+" Last Modified: 30-May-2016.
 
 " Prefix {{{
 " Leader {{
 let g:mapleader='[Leader]'
-let g:maplocalleader="<Space>"
+let g:maplocalleader="\<Space>"
 noremap [Leader] <Nop>
 map <Space> [Leader]
 noremap [Leader]<Space> <Nop>
@@ -81,6 +81,9 @@ set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
 set relativenumber "Setting relativenumber
+set cursorline "Emphasize the cursorline
+set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
+set virtualedit& virtualedit+=block
 "set cscopeprg=gtags-cscope "Specifies the command to execute cscope
 syntax enable "Setting the Syntax
 
@@ -289,7 +292,7 @@ endif
 if neobundle#tap('vim-indent-guides')
     function! neobundle#tapped.hooks.on_source(bundle) "{
     "vim立ち上げ時に、自動的にvim-indent-guidesをオン
-    let g:indent_guides_enable_on_vim_startup=0
+    let g:indent_guides_enable_on_vim_startup=1
     "ガイドの幅
     let g:indent_guides_guide_size=1
     "自動カラーを有効にする
@@ -462,5 +465,21 @@ autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
 
 " Bufferが呼ばれたときに、選択したBufferに移動する
 au BufEnter * execute ":lcd " . expand("%:p:h")
+
+" hファイルの場合は、ifndef/define/endifを自動挿入
+au BufNewFile *.h call IncludeGuard() "{{
+function! IncludeGuard()
+let fl = getline(1)
+if fl =~ "^#if"
+    return
+endif
+let fileName = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+normal! gg
+execute "normal! i#ifndef " . fileName . ""
+execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
+execute "normal! Go#endif   /* " . fileName . " */"
+endfunction
+" }}
+
 
 "}}} End of Etc Setting List
