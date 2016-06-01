@@ -95,27 +95,12 @@ runtime! plugins/*.vim
 " Unite {{
 NeoBundleLazy 'Shougo/unite.vim', {'on_cmd' : 'Unite'}
 NeoBundleLazy 'Shougo/neomru.vim', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'Shougo/vimfiler.vim', {
-    \ 'depends' : 'Shougo/unite.vim',
-    \ 'on_path' : '.*',
-    \ }
-NeoBundleLazy 'osyo-manga/unite-fold', {
-    \   'autoload'  : {
-    \   'unite_sources'  : [
-    \   'fold'
-    \   ],
-    \   }
-    \   }
-NeoBundleLazy 'osyo-manga/unite-quickfix', {
-    \   'autoload'  : {
-    \   'unite_sources'  : [
-    \   'quickfix'
-    \   ],
-    \   }
-    \   }
+NeoBundleLazy 'osyo-manga/unite-fold', {'on_source' : 'unite.vim'}
+NeoBundleLazy 'osyo-manga/unite-quickfix', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'tsukkee/unite-help', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'ujihisa/unite-colorscheme', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'hewes/unite-gtags', {'on_source' : 'unite.vim'}
+NeoBundleLazy 'Shougo/vimfiler.vim', {'depends' : 'Shougo/unite.vim', 'on_path' : '.*'}
 " }}
 
 " Document {{
@@ -123,11 +108,7 @@ NeoBundle 'vim-jp/vimdoc-ja'
 "}}
 
 " Writing {{
-NeoBundleLazy 'tyru/caw.vim', {
-    \   'autoload' : {
-    \   'mappings' : ['<Plug>(caw:'],
-    \   }
-    \   }
+NeoBundleLazy 'tyru/caw.vim', {'on_map' : ['<Plug>(caw:']}
 NeoBundleLazy 'h1mesuke/vim-alignta'
 "}}
 
@@ -143,12 +124,7 @@ NeoBundleLazy 'sgur/vim-textobj-parameter'
 "}}
 
 " UI {{
-NeoBundleLazy 'nathanaelkane/vim-indent-guides', {
-    \   'autoload'  : {
-    \   'commands'  : [
-    \   'IndentGuidesToggle',
-    \   ]},
-    \   }
+NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'on_cmd' : 'IndentGuidesToggle'}
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'osyo-manga/vim-brightest'
 "}}
@@ -159,17 +135,10 @@ NeoBundle 'tomasr/molokai'
 
 " Motion {{
 NeoBundleLazy 'haya14busa/incsearch.vim'
-NeoBundleLazy 'Lokaltog/vim-easymotion', {
-    \   'autoload'  : {
-    \   'mappings'  : [['sxno', '<Plug>(easymotion-']],
-    \   'functions' : ['EasyMotion#User','EasyMotion#is_active',],
-    \   },
-    \   }
-" }}
-
+NeoBundleLazy 'Lokaltog/vim-easymotion', {'on_map' : '<Plug>'}
 " Extend Basic Vim Commands {{
-NeoBundle 'haya14busa/vim-asterisk'
 NeoBundle 'vim-scripts/sudo.vim'
+NeoBundleLazy 'haya14busa/vim-asterisk', {'on_map' : '<Plug>'}
 NeoBundleLazy 'sjl/gundo.vim'
 NeoBundleLazy 'osyo-manga/vim-anzu'
 NeoBundleLazy 'osyo-manga/vim-over'
@@ -235,10 +204,10 @@ endif
 
 " Shougo/vimfiler {{
 if neobundle#tap('vimfiler.vim')
-    function! neobundle#tapped.hooks.on_source(bundle) "{
+    function! neobundle#tapped.hooks.on_source(bundle)
         let g:vimfiler_as_default_explorer=1
         let g:vimfiler_fource_overwrite_statusline=0
-    endfunction "}
+    endfunction
 
     autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
     "VimFiler Mapping List
@@ -290,23 +259,24 @@ endif
 
 " nathanaelkane/vim-indent-guides {{
 if neobundle#tap('vim-indent-guides')
-    function! neobundle#tapped.hooks.on_source(bundle) "{
-    "vim立ち上げ時に、自動的にvim-indent-guidesをオン
-    let g:indent_guides_enable_on_vim_startup=1
-    "ガイドの幅
-    let g:indent_guides_guide_size=1
-    "自動カラーを有効にする
-    let g:indent_guides_auto_colors=1
-    "guideをスタートするインデント量
-    let g:indent_guides_start_level=2
-    "ハイライト色の変化の幅
-    let g:indent_guides_color_change_percent=20
-    let g:indent_guides_default_mapping=0
-    "奇数インデントのカラー
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=#262626 ctermbg=gray
-    "偶数のインデントのカラー
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgray
-    endfunction "}
+    function! neobundle#tapped.hooks.on_source(bundle)
+        "vim立ち上げ時に、自動的にvim-indent-guidesをオン
+        let g:indent_guides_enable_on_vim_startup=1
+        "ガイドの幅
+        let g:indent_guides_guide_size=1
+        "自動カラーを有効にする
+        let g:indent_guides_auto_colors=1
+        "guideをスタートするインデント量
+        let g:indent_guides_start_level=2
+        "ハイライト色の変化の幅
+        let g:indent_guides_color_change_percent=20
+        let g:indent_guides_default_mapping=0
+        "奇数インデントのカラー
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=#262626 ctermbg=gray
+        "偶数のインデントのカラー
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c ctermbg=darkgray
+    endfunction
+
     nnoremap <Leader>i :<C-u>IndentGuidesToggle<CR>
     call neobundle#untap()
 endif
@@ -314,18 +284,24 @@ endif
 
 "  osyo-manga/vim-brightest {{
 if neobundle#tap('vim-brightest')
-    " ui.hを有効にする
-    let g:brightest#enable_filetypes={
-        \ "ui.h" : 1 
-        \}
+    function! neobundle#tapped.hooks.on_source(bundle)
+        " ui.hを有効にする
+        let g:brightest#enable_filetypes={
+            \ "ui.h" : 1 
+            \}
+    endfunction
+
     call neobundle#untap()
 endif
 " }}
 
 " haya14busa/vim-asterisk {{
 if neobundle#tap('vim-asterisk')
-    "検索開始時のカーソル位置を保持
-    let g:asterisk#keeppos=1
+    function! neobundle#tapped.hooks.on_source(bundle)
+        "検索開始時のカーソル位置を保持
+        let g:asterisk#keeppos=1
+    endfunction
+
     map * <Plug>(asterisk-z*)
     map # <Plug>(asterisk-z#)
     map g* <Plug>(asterisk-gz*)
