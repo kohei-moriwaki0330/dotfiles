@@ -109,24 +109,28 @@ NeoBundle 'vim-jp/vimdoc-ja'
 
 " Writing {{
 NeoBundleLazy 'tyru/caw.vim', {'on_map' : ['<Plug>(caw:']}
-NeoBundleLazy 'h1mesuke/vim-alignta'
 "}}
 
-" Development {{
-NeoBundleLazy 'scrooloose/syntastic'
-"}}
+" Operator {{
+NeoBundleLazy 'kana/vim-operator-user'
+" }}
 
 " Text Object {{
-NeoBundleLazy 'kana/vim-operator-user'
 NeoBundleLazy 'kana/vim-textobj-user'
-NeoBundleLazy 'kana/vim-textobj-indent'
-NeoBundleLazy 'sgur/vim-textobj-parameter'
+NeoBundleLazy 'kana/vim-textobj-function', {
+    \   'depends'   :   'kana/vim-textobj-user',
+    \   'on_map'    :   [['xo', 'if', 'af', 'iF', 'aF']],
+    \ }
+NeoBundleLazy 'sgur/vim-textobj-parameter', {
+    \   'depends'   :   'kana/vim-textobj-user',
+    \   'on_map'    :   [['xo', 'i', 'a']],
+    \ }
 "}}
 
 " UI {{
-NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'on_cmd' : 'IndentGuidesToggle'}
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'osyo-manga/vim-brightest'
+NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'on_cmd' : 'IndentGuidesToggle'}
 "}}
 
 " Colorscheme {{
@@ -134,14 +138,16 @@ NeoBundle 'tomasr/molokai'
 "}}
 
 " Motion {{
+NeoBundle 'vim-scripts/sudo.vim'
+NeoBundleLazy 'toshi32tony3/vim-repeat'
 NeoBundleLazy 'haya14busa/incsearch.vim'
 NeoBundleLazy 'Lokaltog/vim-easymotion', {'on_map' : '<Plug>'}
+" }}
+
 " Extend Basic Vim Commands {{
-NeoBundle 'vim-scripts/sudo.vim'
+NeoBundleLazy 'vim-scripts/a.vim'
 NeoBundleLazy 'haya14busa/vim-asterisk', {'on_map' : '<Plug>'}
-NeoBundleLazy 'sjl/gundo.vim'
-NeoBundleLazy 'osyo-manga/vim-anzu'
-NeoBundleLazy 'osyo-manga/vim-over'
+NeoBundleLazy 'osyo-manga/vim-anzu', {'on_map' : '<Plug>' }
 "}}
 
 call neobundle#end()
@@ -216,6 +222,16 @@ if neobundle#tap('vimfiler.vim')
 endif
 " }}
 
+" kana/vim-textobj-function
+if neobundle#tap('vim-textobj-function')
+    call neobundle#untap()
+endif
+
+" sgur/vim-textobj-parameter
+if neobundle#tap('vim-textobj-parameter')
+    call neobundle#untap()
+endif
+
 " tomasr/molokai {{
 if neobundle#tap('molokai')
     let g:molokai_originail=1
@@ -260,8 +276,8 @@ endif
 " nathanaelkane/vim-indent-guides {{
 if neobundle#tap('vim-indent-guides')
     function! neobundle#tapped.hooks.on_source(bundle)
-        "vim立ち上げ時に、自動的にvim-indent-guidesをオン
-        let g:indent_guides_enable_on_vim_startup=1
+        "vim立ち上げ時に、vim-indent-guidesをオフ
+        let g:indent_guides_enable_on_vim_startup=0
         "ガイドの幅
         let g:indent_guides_guide_size=1
         "自動カラーを有効にする
@@ -295,6 +311,13 @@ if neobundle#tap('vim-brightest')
 endif
 " }}
 
+" toshi32tony3/vim-repeat {{
+if neobundle#tap('vim-repeat')
+    "TBD:after setting
+    call neobundle#untap()
+endif
+" }}
+
 " haya14busa/vim-asterisk {{
 if neobundle#tap('vim-asterisk')
     function! neobundle#tapped.hooks.on_source(bundle)
@@ -309,6 +332,13 @@ if neobundle#tap('vim-asterisk')
     call neobundle#untap()
 endif
 " }}
+
+" osyo-manga/vim-anzu
+if neobundle#tap('vim-anzu')
+    nmap n <Plug>(anzu-n-with-echo)zv
+    nmap N <Plug>(anzu-N-with-echo)zv
+
+endif
 
 " tyru/caw.vim {{
 if neobundle#tap('caw.vim')
@@ -340,6 +370,12 @@ endif
 " vim-scripts/sudo.vim {{
 if neobundle#tap('sudo.vim')
     nnoremap <Leader>su :<C-u>e sudo:%<CR>
+    call neobundle#untap()
+endif
+" }}
+
+" vim-scripts/a.vim {{
+if neobundle#tap('a.vim')
     call neobundle#untap()
 endif
 " }}
@@ -458,7 +494,11 @@ execute "normal! Go#endif   // " . fileName . ""
 endfunction
 " }}
 
-" Windowの移動
+" Goes to the another window
 nnoremap <Tab> <C-W>w
+
+" Wrapped lines goes down/up to next row, rather than next line in file.
+nnoremap j gj
+nnoremap k gk
 
 "}}} End of Etc Setting List
