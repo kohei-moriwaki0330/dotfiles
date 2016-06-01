@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 30-May-2016.
+" Last Modified: 1-June-2016.
 
 " Prefix {{{
 " Leader {{
@@ -123,8 +123,6 @@ NeoBundle 'vim-jp/vimdoc-ja'
 "}}
 
 " Writing {{
-NeoBundleLazy 'Shougo/neocomplete.vim'
-NeoBundleLazy 'Shougo/neosnippet.vim'
 NeoBundleLazy 'tyru/caw.vim', {
     \   'autoload' : {
     \   'mappings' : ['<Plug>(caw:'],
@@ -251,6 +249,8 @@ endif
 
 " tomasr/molokai {{
 if neobundle#tap('molokai')
+    let g:molokai_originail=1
+    let g:rehash256=1
     if $COLORTERM == 'gnome-terminal'
         colorscheme default
     else
@@ -325,11 +325,11 @@ endif
 " haya14busa/vim-asterisk {{
 if neobundle#tap('vim-asterisk')
     "検索開始時のカーソル位置を保持
-"    let g:asterisk#keeppos=1
-"    map * <Plug> (asterisk-z*)
-"    map # <Plug> (asterisk-z#)
-"    map g* <Plug> (asterisk-gz*)
-"    map g# <Plug> (asterisk-gz#)
+    let g:asterisk#keeppos=1
+    map * <Plug>(asterisk-z*)
+    map # <Plug>(asterisk-z#)
+    map g* <Plug>(asterisk-gz*)
+    map g# <Plug>(asterisk-gz#)
     call neobundle#untap()
 endif
 " }}
@@ -396,12 +396,13 @@ if neobundle#tap('vim-easymotion')
         let g:EasyMotion_space_jump_first=1
         let g:EasyMotion_prompt='Target Keys> '
         let g:EasyMotion_cursor_highlight=1
-        hi EasyMotionTarget guifg=#80a0ff ctermfg=81
+"        hi EasyMotionTarget guifg=#80a0ff ctermfg=81
+        hi EasyMotionTarget ctermbg=none ctermfg=red
     endfunction
 
+    map <Leader><Space> <Plug>(easymotion-s)
     map <Leader>j <Plug>(easymotion-j)
     map <Leader>k <Plug>(easymotion-k)
-    map <Leader><Space> <Plug>(easymotion-jumptoanywhere)
     call neobundle#untap()
 endif
 " }}
@@ -477,9 +478,11 @@ let fileName = substitute(toupper(expand("%:t")), "\\.", "_", "g")
 normal! gg
 execute "normal! i#ifndef " . fileName . ""
 execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
-execute "normal! Go#endif   /* " . fileName . " */"
+execute "normal! Go#endif   // " . fileName . ""
 endfunction
 " }}
 
+" Windowの移動
+nnoremap <Tab> <C-W>w
 
 "}}} End of Etc Setting List
