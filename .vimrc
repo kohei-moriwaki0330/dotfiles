@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 1-June-2016.
+" Last Modified: 2-June-2016.
 
 " Prefix {{{
 " Leader {{
@@ -68,6 +68,7 @@ set showcmd " Display input command.
 set showmatch "Briefly jump to the matching one.
 set ttytype=builtin_xterm " Setting the terminal type.
 set helplang=ja " Setting the help language.
+set keywordprg=:help " Open vim internal help by k command
 set background=dark "Setting the Vim background.
 set t_Co=256 "Enable 256 colors forcely on screen
 set nobackup " Don't make a backup file before overwriting a file.
@@ -95,8 +96,6 @@ runtime! plugins/*.vim
 " Unite {{
 NeoBundleLazy 'Shougo/unite.vim', {'on_cmd' : 'Unite'}
 NeoBundleLazy 'Shougo/neomru.vim', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'osyo-manga/unite-fold', {'on_source' : 'unite.vim'}
-NeoBundleLazy 'osyo-manga/unite-quickfix', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'tsukkee/unite-help', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'ujihisa/unite-colorscheme', {'on_source' : 'unite.vim'}
 NeoBundleLazy 'hewes/unite-gtags', {'on_source' : 'unite.vim'}
@@ -123,7 +122,7 @@ NeoBundleLazy 'kana/vim-textobj-function', {
     \ }
 NeoBundleLazy 'sgur/vim-textobj-parameter', {
     \   'depends'   :   'kana/vim-textobj-user',
-    \   'on_map'    :   [['xo', 'i', 'a']],
+    \   'on_map'    :   [['xo', 'i,', 'a,']],
     \ }
 "}}
 
@@ -238,6 +237,8 @@ if neobundle#tap('molokai')
     let g:rehash256=1
     if $COLORTERM == 'gnome-terminal'
         colorscheme default
+        set nonumber
+        set norelativenumber
     else
         try
             colorscheme molokai
@@ -494,8 +495,10 @@ execute "normal! Go#endif   // " . fileName . ""
 endfunction
 " }}
 
-" Goes to the another window
+" Goes to Another window
 nnoremap <Tab> <C-W>w
+" Set the position of the help display
+nnoremap <Leader>h :<C-u>vertical belowright help<CR>
 
 " Wrapped lines goes down/up to next row, rather than next line in file.
 nnoremap j gj
