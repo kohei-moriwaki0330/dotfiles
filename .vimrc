@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 2-June-2016.
+" Last Modified: 4-June-2016.
 
 " Prefix {{{
 " Leader {{
@@ -44,14 +44,15 @@ call neobundle#begin(expand('~/.vim/bundle'))
 " Basic {{{
 set encoding=japan "Sets the character encoding used inside Vim.
 set fileencodings=japan,utf-0,euc-jp,sjis "A list of character encodings.
+set termencoding=japan,utf-0,euc-jp,sjis "Automatically detected character encodings
 set fileformats=unix,dos " This gives the end-of-line(<EOL>) formats.
 set title "Sets the title used inside Vim.
 set expandtab "Use the appropriate number of spaces to insert a <Tab>.
 set tabstop=4 "Number of spaces that a <Tab> in the file counts for.
 set shiftwidth=4 "Number of spaces to use for each step of (auto)indent.
 set list listchars=tab:>-,trail:-,extends:>,precedes:< "Use the same symbols as TextMate for tabstops
-set cinoptions=:0,p0,t0
-set cinwords=if,else,while,do,for,switch,case
+set cinoptions=:0,p0,t0 "Options for C-indent
+set cinwords=if,else,while,do,for,switch,case "list of words that cause more C-indent
 set number "Setting Column Number
 set smartindent "Copy indent from current line when starting a new line.
 set hlsearch | nohlsearch "Highlight search patterns, suport reloading.
@@ -81,11 +82,12 @@ set hidden " Display anather buffer when current buffer isn't saved.
 set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
-set relativenumber "Setting relativenumber
+set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
 set virtualedit& virtualedit+=block
 "set cscopeprg=gtags-cscope "Specifies the command to execute cscope
+set cscopequickfix=s-,c-,d-,i-,t-,e-,f-,g-
 syntax enable "Setting the Syntax
 
 " }}} End of Basic
@@ -235,17 +237,7 @@ endif
 if neobundle#tap('molokai')
     let g:molokai_originail=1
     let g:rehash256=1
-    if $COLORTERM == 'gnome-terminal'
-        colorscheme default
-        set nonumber
-        set norelativenumber
-    else
-        try
             colorscheme molokai
-        catch
-            colorscheme desert
-        endtry
-    endif
     call neobundle#untap()
 endif
 " }}
