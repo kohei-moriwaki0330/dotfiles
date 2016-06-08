@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 4-June-2016.
+" Last Modified: 8-June-2016.
 
 " Prefix {{{
 " Leader {{
@@ -79,15 +79,11 @@ set cmdheight=1 "Number of screen lines to use for the command-line.
 set cmdwinheight=5 "Number of screen lines to use for the command-line window.
 set grepprg=internal "Program to use for the :grep command.
 set hidden " Display anather buffer when current buffer isn't saved.
-set keywordprg=:help " Open Vim internal help by K command.
 set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
 set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
-set virtualedit& virtualedit+=block
-"set cscopeprg=gtags-cscope "Specifies the command to execute cscope
-set cscopequickfix=s-,c-,d-,i-,t-,e-,f-,g-
 syntax enable "Setting the Syntax
 
 " }}} End of Basic
