@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 8-June-2016.
+" Last Modified: 15-June-2016.
 
 " Prefix {{{
 " Leader {{
@@ -79,7 +79,6 @@ set cmdheight=1 "Number of screen lines to use for the command-line.
 set cmdwinheight=5 "Number of screen lines to use for the command-line window.
 set grepprg=internal "Program to use for the :grep command.
 set hidden " Display anather buffer when current buffer isn't saved.
-set shortmess& shortmess+=I "Don't give the message when starting Vim :into.
 set spelllang=en,cjk "Spell checking language.
 set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
@@ -114,6 +113,7 @@ NeoBundleLazy 'kana/vim-operator-user'
 
 " Text Object {{
 NeoBundleLazy 'kana/vim-textobj-user'
+
 NeoBundleLazy 'kana/vim-textobj-function', {
     \   'depends'   :   'kana/vim-textobj-user',
     \   'on_map'    :   [['xo', 'if', 'af', 'iF', 'aF']],
@@ -191,7 +191,6 @@ if neobundle#tap('unite.vim')
     function! s:unite_my_settings()
         imap <buffer> jj <Plug>(unite_insert_leave)
         imap <buffer> kk <Plug>(unite_insert_leave)
-        nmap <buffer> i <Plug>(unite_normal_leave)
         nmap <buffer> <ESC> <Plug>(unite_exit)
     endfunction
     call neobundle#untap()
@@ -442,9 +441,6 @@ nmap [Cscope]d :tab cs find d <C-R>=expand("<cword>")<CR><CR>
 " Set relativenumber or no relativenumber.
 nnoremap <silent> <Leader>rel :<C-u>set relativenumber! relativenumber?<CR>
 
-" .vimrc Mapping List
-nnoremap <silent> <Leader>rc :vs ~/.vimrc<CR>
-
 " Tab KeyMaps {{
 nnoremap <silent> [Tab]c :tablast <bar> tabnew %<CR>
 nnoremap <silent> [Tab]f :tablast <bar> tabnew .<CR>
@@ -479,14 +475,16 @@ let fileName = substitute(toupper(expand("%:t")), "\\.", "_", "g")
 normal! gg
 execute "normal! i#ifndef " . fileName . ""
 execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
-execute "normal! Go#endif   // " . fileName . ""
+
 endfunction
 " }}
 
 " Goes to Another window
 nnoremap <Tab> <C-W>w
-" Set the position of the help display
-nnoremap <Leader>h :<C-u>vertical belowright help<CR>
+" .vimrc Mapping List
+nnoremap <silent> <Leader>rc :<C-u>botright vs ~/.vimrc<CR>
+" vimhelp List
+nnoremap <silent> <Leader>h :<C-u>botright vs ~/.vim/bundle/help.jax<CR>
 
 " Wrapped lines goes down/up to next row, rather than next line in file.
 nnoremap j gj
