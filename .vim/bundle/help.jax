@@ -1,0 +1,126 @@
+<<<<vi操作>>>>
+<<normal mapping>>
+  <Shift+k>   : open help
+  <Leader>rel : set relativenumber on/off change
+  <Leader>rc  : open vimrc
+  <Leader>h   : open help.jax
+  [Cscope]s   :tab cs find s <C-R>=expand("<cword>")<CR><CR>
+  [Cscope]g   :tab cs find g <C-R>=expand("<cword>")<CR><CR>
+  [Cscope]c   :tab cs find c <C-R>=expand("<cword>")<CR><CR>
+  [Cscope]t   :tab cs find t <C-R>=expand("<cword>")<CR><CR>
+  [Cscope]e   :tab cs find e <C-R>=expand("<cword>")<CR><CR>
+  [Cscope]f   :tab cs find f <C-R>=expand("<cfile>")<CR><CR>
+  [Cscope]i   :tab cs find i <C-R>=expand("<cfile>")<CR><CR>
+  [Cscope]d   :tab cs find d <C-R>=expand("<cword>")<CR><CR>
+  [Tab]c :tablast <bar> tabnew %<CR>
+  [Tab]f :tablast <bar> tabnew .<CR>
+  [Tab]d :tabclose<CR>
+  [Tab]n :tabnext<CR>
+  [Tab]p :tabprevious<CR>
+
+<<make>>
+ :make     Vim上でのmake実行
+   :cc     エラーの内容確認  | :cn      エラー行へ移動(連続的)
+   :copen  ErrorWindowの表示 | :cclose  ErrorWindowを閉じる
+
+ <<Window分割>>
+ Ctrl-w s   :sp       Windowの横分割
+ Ctrl-w v   :vsp      Windowの縦分割
+ Ctrl-w o             Window分割の解除
+ Ctrl-w r             Windowを入れ換える
+ Ctrl-w =             Window分割を均等にする
+ Ctrl-w <  幅を小さく | Ctrl-w >  幅を大きく
+ Ctrl-w -  高さを低く | Ctrl-w +  高さを高く
+
+ <<折りたたみ操作>>
+ :zc  閉じる   | :zo  折りたたみを開く
+ :zr  全て開く | :zm  全て閉じる
+ :za  開閉する | :zi  有効／無効を切替える
+
+ <<ビジュアルモード>>
+  v  (word単位) | V  (line単位) | Ctrl+v  (block単位) Ctrl+r (Replace単位)
+
+ <<操作履歴>>
+  u        Undo            | Ctrl-r  Redo
+  Ctrl-o   前カーソル位置  | Ctrl-i  次カーソル位置
+ <<<検索/移動>>>
+  *   単語の次検索         | #   単語の前検索
+  n  継続して同単語次検索  | N   継続して同単語前検索
+  w   次の単語の先頭       | e   次の単語の最後
+  b   前の単語の先頭       | ge  前の単語の最後
+  W   次の空白の直後の単語 | E   次の空白の直前の単語
+  B   前の空白の直後の単語 | gE  前の空白の直前の単語
+  [[  前の関数宣言         | ]]  次の関数宣言
+  0   行頭                 | $   行末
+  gg  頁頭(ex. 5gg)        | G   頁末(ex. 5G)
+  %   対応する括弧
+  H  画面上                | M  画面中央  L  画面下
+  Ctrl-f  一画面分下       | Ctrl-b  一画面分上
+
+ <<<入力支援>>>
+  ~       大文字/小文字変換
+  &&      コメント化(行頭に//)
+  Ctrl-n  次候補補間  | Ctrl-p  前候補補間
+  >>      右インデント| <<      左インデント
+
+<<その他>>
+ yy 行コピー      | yw 単語コピー
+ dd 行削除        | dw 単語削除
+ cc 行削除入力    | cw 単語削除入力
+ Shift-j 改行削除 | Shift-d  以降削除
+ R  行上書き      | r  一文字上書き
+ O  上行入力      | o  下行入力
+ p  後ろへペースト| P 前へペースト
+ yiw 単語コピー   | diw 単語削除  | ciw 単語変更
+ Ctrl-r" コマンド中にペースト
+ Ctrl-r/ コマンド中に検索文字をペースト
+
+<<<<Plugin>>>>
+<<Shougo/unite.vim>>
+  [Unite]u :<C-u>Unite<CR>
+  [Unite]f :<C-u>Unite file<CR>
+  [Unite]b :<C-u>Unite -silent buffer file_mru bookmark<CR>
+  [Unite]r :<C-u>UniteResume<CR>
+  [Unite]g :<C-u>Unite -silent -no-quit grep<CR>
+  [Unite]r :<C-u>Unite runtimepath<CR>
+  [Unite]c :<C-u>Unite -auto-preview colorscheme<CR>
+  [Unite]s :<C-u>Unite source<CR>
+  [Unite]h :<C-u>Unite help<CR>
+  [Unite]ma :<C-u>Unite -silent mapping<CR>
+  [Unite]me :<C-u>Unite -silent output:message<CR>
+
+<<Shougo/vimfiler.vim>>
+  [Leader]vi : vimFiler open
+  l : file open
+  q : file close
+
+<<tyru/caw.vim>>
+  [Leader]cc : sentence comment out
+
+<<vim-scripts/sudo.vim>>
+  [Leader]su : Change sudo user
+
+<<vim-scripts/a.vim>>
+  :A    header/cpp change
+
+<<Lokaltog/vim-easymotion>>
+  [Leader]<Space> : easymotion start
+  [Leader]h : Top easymotion start
+  [Leader]j : Bottom easymotion start
+
+<<nathanaelkane/vim-indent-guides>>
+  [Leader]i : indent on/off change
+
+<<haya14busa/incsearch.vim>>
+  g/
+  g?
+
+<<cvsdiff.vim>>
+  :Cvsdiff       cvs diff(revを引数に渡せる)
+  :Cvsdiff v     cvs diffのvertical指定
+
+<<NADoxygenComment.vim>>
+  :Dox           Doxygenコメント 関数用
+  :DoxAuthor     Doxygenコメント ファイルヘッダ用
+  :DoxClass      Doxygenコメント クラス用
+
