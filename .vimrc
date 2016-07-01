@@ -141,14 +141,14 @@ NeoBundleLazy 'Lokaltog/vim-easymotion', {'on_map' : '<Plug>'}
 " }}
 
 " Network {{
-NeoBundle 'tyru/open-browser.vim'
-"NeoBundleLazy 'tyru/open-browser.vim', {
-"    \   'on_map'    :   '<Plug>(open',
-"    \   'on_cmd'    :   ['OpenBrowserSearch'],
-"    \ }
+NeoBundleLazy 'tyru/open-browser.vim', {
+    \   'on_map'    :   '<Plug>(open',
+    \   'on_cmd'    :   ['OpenBrowserSearch'],
+    \ }
 " }}
 
 " Extend Basic Vim Commands {{
+NeoBundle 'mhinz/vim-startify'
 NeoBundleLazy 'vim-scripts/a.vim'
 NeoBundleLazy 'haya14busa/vim-asterisk', {'on_map' : '<Plug>'}
 NeoBundleLazy 'osyo-manga/vim-anzu', {'on_map' : '<Plug>' }
@@ -369,6 +369,22 @@ if neobundle#tap('sudo.vim')
 endif
 " }}
 
+" mhinz/vim-startify'
+if neobundle#tap('vim-startify')
+  let g:startify_files_number = 15
+  let g:startify_change_to_dir = 5
+  let g:startify_session_dir = '~/vimfiles/session'
+  let g:startify_session_delete_buffers = 1
+  nnoremap [Unite], :<C-u>Startify<CR>
+
+  function! neobundle#hooks.on_post_source(bundle)
+    delcommand StartifyDebug
+    delcommand SClose
+  endfunction
+
+endif
+" }}
+
 " vim-scripts/a.vim {{
 if neobundle#tap('a.vim')
     call neobundle#untap()
@@ -541,7 +557,7 @@ endfunction
 " Goes to Another window
 nnoremap <Tab> <C-W>w
 " .vimrc Mapping List
-nnoremap <silent> <Leader>rc :<C-u>botright vs ~/.vimrc<CR>
+nnoremap <silent> <Leader>ev :<C-u>edit $MYVIMRC<CR>
 " vimhelp List
 nnoremap <silent> <Leader>h :<C-u>botright vs ~/.vim/bundle/help.jax<CR>
 
