@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 15-June-2016.
+" Last Modified: 01-July-2016.
 
 " Prefix {{{
 " Leader {{
@@ -54,7 +54,6 @@ set list listchars=tab:>-,trail:-,extends:>,precedes:< "Use the same symbols as 
 set cinoptions=:0,p0,t0 "Options for C-indent
 set cinwords=if,else,while,do,for,switch,case "list of words that cause more C-indent
 set number "Setting Column Number
-set smartindent "Copy indent from current line when starting a new line.
 set hlsearch | nohlsearch "Highlight search patterns, suport reloading.
 set infercase " Ignore case on insert completion.
 set incsearch " From before you confirm with the enter key, or do a search.
@@ -139,6 +138,14 @@ NeoBundle 'vim-scripts/sudo.vim'
 NeoBundleLazy 'toshi32tony3/vim-repeat'
 NeoBundleLazy 'haya14busa/incsearch.vim'
 NeoBundleLazy 'Lokaltog/vim-easymotion', {'on_map' : '<Plug>'}
+" }}
+
+" Network {{
+NeoBundle 'tyru/open-browser.vim'
+"NeoBundleLazy 'tyru/open-browser.vim', {
+"    \   'on_map'    :   '<Plug>(open',
+"    \   'on_cmd'    :   ['OpenBrowserSearch'],
+"    \ }
 " }}
 
 " Extend Basic Vim Commands {{
@@ -407,6 +414,15 @@ if neobundle#tap('vim-easymotion')
 endif
 " }}
 
+" tyru/open-browser.vim {{
+if neobundle#tap('open-browser.vim')
+    nmap gx <Plug>(openbrowser-smart-search)
+    vmap gx <Plug>(openbrowser-smart-search)
+    call neobundle#untap()
+endif
+
+" }}
+
 " Etc Setting List {{{
 
 " Cscope add {{
@@ -478,6 +494,49 @@ execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
 
 endfunction
 " }}
+
+" Cvsdiff
+if exists("loaded_cvsdiff") || &cp
+    finish
+endif
+let loaded_cvsdiff = 1
+com! -bar -nargs=? Cvsdiff :call s:Cvsdiff(<f-args>)
+
+function! s:Cvsdiff(...)
+    colorscheme evening
+    if a:0 > 1
+        let rev = a:2
+    else
+        let rev = ''
+    endif
+
+    let ftype = &filetype
+    let tmpfile = tempname()
+    let cmd = "cat " . bufname("%") . " > " . tmpfile
+    let cmd_output = system(cmd)
+    let tmpdiff = tempname()
+    let cmd = "cvs diff" . rev . " " . bufname("%") . " > " . tmpdiff
+    let cmd_output = system(cmd)
+    if v:shell_error && cmd_output != ""
+        echohl WarningMsg | echon cmd_output-
+        return
+    endif
+
+    let cmd = "patch -R -p0 " . tmpfile . " " . tmpdiff
+    let cmd_output = system(cmd)
+    if v:shell_error && cmd_output != ""
+        echohl WarningMsg | echon cmd_output-
+        return
+    endif
+
+    if a:0 > 0 && a:1 == "v"
+        exe "vert diffsplit" . tmpfile
+    else
+        exe "diffsplit" . tmpfile
+    endif
+
+    exe "set filetype=" . ftype
+endfunction
 
 " Goes to Another window
 nnoremap <Tab> <C-W>w
