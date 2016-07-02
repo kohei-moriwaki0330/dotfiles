@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 01-July-2016.
+" Last Modified: 03-July-2016.
 
 " Prefix {{{
 " Leader {{
@@ -371,17 +371,24 @@ endif
 
 " mhinz/vim-startify'
 if neobundle#tap('vim-startify')
-  let g:startify_files_number = 15
-  let g:startify_change_to_dir = 5
-  let g:startify_session_dir = '~/vimfiles/session'
-  let g:startify_session_delete_buffers = 1
-  nnoremap [Unite], :<C-u>Startify<CR>
+"    function! neobundle#tapped.hooks.on_source(bundle)
+        let g:startify_files_number = 15
+        let g:startify_change_to_dir = 5
+        let g:startify_session_dir = '~/vimfiles/session'
+        let g:startify_session_delete_buffers = 0
+        let g:startify_custom_indices=
+        \['a', 'b', 'c', 'd', 'f', 'g',
+        \ 'h', 'i', 'j', 'k', 'l', 'm',
+        \ 'n', 'o', 'p', 'r', 's', 't',
+        \ 'u', 'v', 'w', 'x', 'y', 'z']
+        let g:startify_bookmarks=["~/.vimrc"]
+"    endfunction
+    function! neobundle#hooks.on_post_source(bundle)
+        delcommand StartifyDebug
+        delcommand SClose
+    endfunction
 
-  function! neobundle#hooks.on_post_source(bundle)
-    delcommand StartifyDebug
-    delcommand SClose
-  endfunction
-
+    nnoremap [Unite], :<C-u>Startify<CR>
 endif
 " }}
 
