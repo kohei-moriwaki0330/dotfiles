@@ -1,5 +1,4 @@
-" vimrc for Vim(Version:7.4)
-" Author: Kohei kanno.
+
 " Last Modified: 03-July-2016.
 
 " Prefix {{{
@@ -138,6 +137,7 @@ NeoBundle 'vim-scripts/sudo.vim'
 NeoBundleLazy 'toshi32tony3/vim-repeat'
 NeoBundleLazy 'haya14busa/incsearch.vim'
 NeoBundleLazy 'Lokaltog/vim-easymotion', {'on_map' : '<Plug>'}
+NeoBundleLazy 'deris/vim-shot-f', {'on_map' : '<Plug>'}
 " }}
 
 " Network {{
@@ -426,8 +426,8 @@ if neobundle#tap('vim-easymotion')
         let g:EasyMotion_space_jump_first=1
         let g:EasyMotion_prompt='Target Keys> '
         let g:EasyMotion_cursor_highlight=1
-"        hi EasyMotionTarget guifg=#80a0ff ctermfg=81
-        hi EasyMotionTarget ctermbg=none ctermfg=red
+        hi EasyMotionTarget guifg=#80a0ff ctermfg=81
+"        hi EasyMotionTarget ctermbg=none ctermfg=red
     endfunction
 
     map <Leader><Space> <Plug>(easymotion-s)
@@ -435,6 +435,15 @@ if neobundle#tap('vim-easymotion')
     map <Leader>k <Plug>(easymotion-k)
     call neobundle#untap()
 endif
+" }}
+
+" deris/vim-shot-f {{
+if neobundle#tap('vim-shot-f')
+    map f <Plug>(shot-f-f)
+    map F <Plug>(shot-f-F)
+    call neobundle#untap()
+endif
+
 " }}
 
 " tyru/open-browser.vim {{
