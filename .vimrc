@@ -1,5 +1,5 @@
 
-" Last Modified: 03-July-2016.
+" Last Modified: 11-July-2016.
 
 " Prefix {{{
 " Leader {{
@@ -81,6 +81,7 @@ set spelllang=en,cjk "Spell checking language.
 set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
+set wildmenu wildmode=list:full "wildmenu is  command-line completion operates
 syntax enable "Setting the Syntax
 
 " }}} End of Basic
@@ -239,7 +240,7 @@ endif
 if neobundle#tap('molokai')
     let g:molokai_originail=1
     let g:rehash256=1
-            colorscheme molokai
+    colorschem molokai
     call neobundle#untap()
 endif
 " }}
