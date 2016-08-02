@@ -1,9 +1,10 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 11-July-2016.
+" Last Modified: 02-Aug-2016.
+" Source: https://github.com/kohei-moriwaki0330
 
 " Prefix {{{
-" Leader {{
+" Leader
 let g:mapleader='[Leader]'
 let g:maplocalleader="\<Space>"
 noremap [Leader] <Nop>
@@ -11,34 +12,143 @@ map <Space> [Leader]
 noremap [Leader]<Space> <Nop>
 map <LocalLeader> [Leader]
 noremap [Leader]<LocalLeader> <Nop>
-" }}
-" Unite {{
+" Unite
 nnoremap [Unite] <Nop>
 nmap , [Unite]
-" }}
-" Tab {{
+" Tab
 nnoremap [Tab] <Nop>
 nmap t [Tab]
-" }}
-" Cscope {{
+" Cscope
 noremap [Cscope] <Nop>
 nmap <C-\> [Cscope]
-" }}
 " }}} End of Prefix
+
+" Cscope {{{
+cs add ~/kanno/Tool/.cscope/View/cscope.out
+cs add ~/kanno/Tool/.cscope/Model/cscope.out
+cs add ~/kanno/Tool/.cscope/Etc/cscope.out
+cs add ~/kanno/Tool/.cscope/Framework/cscope.out
+cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
+" }}} End of Cscope
+
+" Mappings {{{
+" Wrapped lines goes down/up to next row, rather than next line in file.
+nnoremap j gj
+nnoremap k gk
+" Goes to Another window
+nnoremap <Tab> <C-W>w
+" Open HelpText
+nnoremap <silent> <Leader>h :<C-u>botright vs ~/.vim/bundle/help.jax<CR>
+" gf
+nnoremap gf :<C-u>execute 'tabfind ' .expand('<cfile>')<CR>
+" Set relativenumber or no relativenumber.
+nnoremap <silent> <Leader>rel :<C-u>set relativenumber! relativenumber?<CR>
+" Escope InserMode
+inoremap <silent> jj <ESC>
+" Breakline with Enter
+"nnoremap <CR> o<ESC>
+" Get info ( get the total of lines, words, chars and bytes )
+nnoremap <Leader>gi g<C-G>
+" Shortcut to rapildly toggle ' set list'
+nnoremap <silent> <Leader>l :<C-u>set list! list?<CR>
+" Cscope
+"   's'   symbol: find all references to the token under cursor
+"   'g'   global: find global definition(s) of the token under cursor
+"   'c'   calls:  find all calls to the function name under cursor
+"   't'   text:   find all instances of the text under cursor
+"   'e'   egrep:  egrep search for the word under cursor
+"   'f'   file:   open the filename under cursor
+"   'i'   includes: find files that include the filename under cursor
+"   'd'   called: find functions that function under cursor calls
+nmap [Cscope]s :tab cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]g :tab cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]c :tab cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]t :tab cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]e :tab cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap [Cscope]f :tab cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap [Cscope]i :tab cs find i <C-R>=expand("<cfile>")<CR><CR>
+nmap [Cscope]d :tab cs find d <C-R>=expand("<cword>")<CR><CR>
+" Tab
+nnoremap <silent> [Tab]c :tablast <bar> tabnew %<CR>
+nnoremap <silent> [Tab]f :tablast <bar> tabnew .<CR>
+nnoremap <silent> [Tab]d :tabclose<CR>
+nnoremap <silent> [Tab]l :tabnext <CR>
+nnoremap <silent> [Tab]h :tabprevious<CR>
+for s:n in range(1,9)
+    execute 'nnoremap <silent> [Tab]'.s:n ':<C-u>tabnext'.s:n.'<CR>'
+endfor
+unlet s:n
+" Buffer
+nnoremap <silent> [Tab]] :<C-u>buffers<CR>
+nnoremap <silent> [Tab]n :<C-u>bnext<CR>
+nnoremap <silent> [Tab]p :<C-u>bprevious<CR>
+nnoremap <silent> [Tab]D :<C-u>bdelete<CR>
+" Use command-line window
+nnoremap <Leader>: q:
+vnoremap <Leader>: q:
+
+" }}} End of Mappings
 
 " release autogroup in MyAutoCmd {{{
 augroup MyAutoCmd
     autocmd!
 augroup END
+" Autocmd Settings
+command! -nargs=* Autocmd autocmd MyAutoCmd <args>
+command! -nargs=* AutocmdFT autocmd MyAutoCmd FileType <args>
+"Open & AutoReload .vimrc
+command! EVimrc e $MYVIMRC
+command! ETabVimrc tabnew $MYVIMRC
+command! SoVimrc source $MYVIMRC
+Autocmd BufWritePost *vimrc source $MYVIMRC
+Autocmd BufWritePost *gvimrc if has('gui_running') source $MYVIMRC
+" Close Vim help by q
+AutocmdFT help nnoremap <buffer> q <C-w>c
+AutocmdFT help nnoremap <buffer> ;q q
+AutocmdFT help nnoremap <buffer> Q q
+" 最後のカーソル位置に戻る
+autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
+" :make実行後、自動でQuickfixウィンドウを開く
+autocmd MyAutoCmd QuickfixCmdPost make if len(getqflist()) != 0 | copen | endif
+" 最後のWindowのbuftypeがQuickFixであれば、自動で閉じる
+autocmd MyAutoCmd WinEnter * if winnr('$') == 1 && &buftype == 'quickfix' | quit | endif
+" Include Guard
+au BufNewFile *.h call IncludeGuard()
+" Resize splits when the window is resized
+Autocmd VimResized * :wincmd=
+" Comand-Line-Window
+Autocmd CmdwinEnter * call s:init_cmdwin()
+" Save as root
+cnoreabbrev w!! w !sudo tee > /dev/null %
+" }}
 "}}} End of MyAutoCmd
+
+" Echo startup time on start {{{
+if has('vim_starting') && has('reltime')
+    let g:startuptime=reltime()
+    Autocmd VimEnter * let g:startuptime=reltime(g:startuptime) | 
+    \redraw | echomsg 'startuptime: '. reltimestr(g:startuptime)
+endif
+" }}} End of Echo startup time
 
 " NeoBundle {{{
 filetype plugin indent off
+if ! isdirectory(expand('~/.vim/bundle'))
+    echon 'Installing neobundle.vim'
+    silent call mkdir(expand('~/.vim/bundle'), 'p')
+    silent !git clone://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
+    echo 'done.'
+    if v:shell_error
+        echoerr 'neobundle.vim installation has failed!'
+        finish
+    endif
+endif
 if has('vim_starting')
     set nocompatible
-    set runtimepath+=~/.vim/bundle/neobundle.vim/
+    set runtimepath& runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 call neobundle#begin(expand('~/.vim/bundle'))
+"filetype plugin indent on
 " }}} End of NeoBundle
 
 " Basic {{{
@@ -67,28 +177,41 @@ set noequalalways " Don't auto resize Window.
 set showcmd " Display input command.
 set showmatch "Briefly jump to the matching one.
 set ttytype=builtin_xterm " Setting the terminal type.
+set helpheight=12 "minimal intial height of the help window
 set helplang=ja " Setting the help language.
 set keywordprg=:help " Open vim internal help by k command
 set background=dark "Setting the Vim background.
-set t_Co=256 "Enable 256 colors forcely on screen
+set t_Co=256 "Number of colors
 set nobackup " Don't make a backup file before overwriting a file.
 set noswapfile " Don't make a swap file before overwriting a file.
 set autoread "Automatically read file again which has been changed outside of Vim.
 set cmdheight=1 "Number of screen lines to use for the command-line.
 set cmdwinheight=5 "Number of screen lines to use for the command-line window.
+set completeopt-=preview "Do not use preview window
+set diffopt+=iwhite
 set grepprg=internal "Program to use for the :grep command.
 set hidden " Display anather buffer when current buffer isn't saved.
 set spelllang=en,cjk "Spell checking language.
-set relativenumber "Show the relative line number for each line
+"set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
-set wildmenu wildmode=list:full "wildmenu is  command-line completion operates
-syntax enable "Setting the Syntax
-
+set wildmenu wildmode=list:longest,full "Shows all the vim options
+set wildignore& "A file that matches with one of these patterns is ignored
+set wildignore+=*.sw? "Vim swap files
+set wildignore+=*.bak,*.?~,*.??~,*.???~,*.~ "Backup files
+set wildignore+=*.luac "Lua byte code
+set wildignore+=*.jar  "Java archives
+set wildignore+=*.pyc  "Pythons byte code
+set wildignore+=*.states "Pylint stats
+syntax enable
 " }}} End of Basic
 
 " Plugins {{{
 runtime! plugins/*.vim
+
+" Neobundle {{
+NeoBundleFetch 'Shougo/neobundle.vim'
+" }}
 
 " Unite {{
 NeoBundleLazy 'Shougo/unite.vim', {'on_cmd' : 'Unite'}
@@ -101,11 +224,18 @@ NeoBundleLazy 'Shougo/vimfiler.vim', {'depends' : 'Shougo/unite.vim', 'on_path' 
 
 " Document {{
 NeoBundle 'vim-jp/vimdoc-ja'
-"}}
+NeoBundleLazy 'vim-scripts/Conque-GDB', {'on_cmd' : 'ConqueGdb'}
+" }}
 
 " Writing {{
+NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundleLazy 'tyru/caw.vim', {'on_map' : ['<Plug>(caw:']}
-"}}
+
+" }}
+
+" Application {{
+NeoBundleLazy 'itchyny/calendar.vim', {'commands' : ['Calendar']}
+" }}
 
 " Operator {{
 NeoBundleLazy 'kana/vim-operator-user'
@@ -122,17 +252,18 @@ NeoBundleLazy 'sgur/vim-textobj-parameter', {
     \   'depends'   :   'kana/vim-textobj-user',
     \   'on_map'    :   [['xo', 'i,', 'a,']],
     \ }
-"}}
+" }}
 
 " UI {{
+NeoBundle 'cocopon/lightline-hybrid.vim'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'osyo-manga/vim-brightest'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'on_cmd' : 'IndentGuidesToggle'}
-"}}
+" }}
 
 " Colorscheme {{
 NeoBundle 'tomasr/molokai'
-"}}
+" }}
 
 " Motion {{
 NeoBundle 'vim-scripts/sudo.vim'
@@ -154,33 +285,29 @@ NeoBundle 'mhinz/vim-startify'
 NeoBundleLazy 'vim-scripts/a.vim'
 NeoBundleLazy 'haya14busa/vim-asterisk', {'on_map' : '<Plug>'}
 NeoBundleLazy 'osyo-manga/vim-anzu', {'on_map' : '<Plug>' }
-"}}
-
+" }}
 call neobundle#end()
+
 " }}} End of Plugins
 
 " Shougo/unite.vim {{
 if neobundle#tap('unite.vim')
     function! neobundle#tapped.hooks.on_source(bundle)
+        let g:unite_source_history_yank_enable=0
         let g:unite_kind_jump_list_after_jump_scroll=0
-        "Uniteのpromtp設定
-        let g:unite_prompt='$'
-        let g:unite_source_rec_min_cache_files=1000
-        let g:unite_source_rec_max_cache_files=5000
-        "最近開いたファイル履歴の保存数
-        let g:unite_source_file_mru_limit=300
-        "大文字小文字を区別しない
         let g:unite_enable_start_ignore_case=1
         let g:unite_enable_smart_case=1
-        "InsertModeで開始する
         let g:unite_enable_start_insert=1
-        "file_mruの表示フォーマットを指定。空に表示すると表示スピードが高速化
+        let g:unite_source_rec_min_cache_files=1000
+        let g:unite_source_rec_max_cache_files=5000
+        let g:unite_source_file_mru_long_limit=6000
+        let g:unite_source_file_mru_long_limit=6000
+        let g:unite_source_directory_mru_limit=500
+        let g:unite_winheight=25
+        let g:unite_prompt='$'
         let g:unite_source_file_mru_filename_format=' '
-        "最近開いたファイル履歴の保存数
         let g:unite_source_file_mru_limit=50
-        "横分割で開く
         let g:unite_enable_split_vertically=0
-        "下(右)に開く
         let g:unite_split_rule='botright'
     endfunction
 
@@ -209,6 +336,17 @@ endif
 " ujihisa/unite-colorscheme {{
 if neobundle#tap('unite-colorscheme')
     command! -nargs=* BeautifulAttack Unite colorscheme -auto-preview -winheight=3
+    call neobundle#untap()
+endif
+" }}
+
+" vim-scripts/Conque-GDB {{
+if neobundle#tap('Conque-GDB')
+    function! neobundle#tapped.hooks.on_source(bundle)
+        let g:ConqueTerm_Color=2
+        let g:ConqueTerm_CloseOnEnd=1
+        let g:ConqueTerm_StartMessages=0
+    endfunction
     call neobundle#untap()
 endif
 " }}
@@ -242,6 +380,14 @@ if neobundle#tap('molokai')
     let g:molokai_originail=1
     let g:rehash256=1
     colorschem molokai
+    Autocmd BufWinEnter,ColorScheme * call s:hl_colorscheme_modify_molokai()
+    function! s:hl_colorscheme_modify_molokai()
+        hi! DiffText term=reverse cterm=bold ctermbg=239 gui=bold,italic guibg=#4C4745
+        hi! DiffDelete term=bold ctermfg=180 ctermbg=0 gui=bold guifg=#960050 guibg=#1E0010
+        hi! DiffAdd term=bold ctermbg=0 guibg=#13354A
+        hi! Visual ctermfg=236 ctermbg=119 guifg=#353535 guibg=#95e454
+        hi! default link MatchParen Title
+    endfunction
     call neobundle#untap()
 endif
 " }}
@@ -249,6 +395,7 @@ endif
 " itchyny/lightline.vim {{
 if neobundle#tap('lightline.vim')
     let g:lightline = {
+          \ 'colorscheme':'hybrid',
           \ 'active': {
           \   'left': [ ['mode', 'paste'], ['readonly', 'filename', 'modified'] ]
           \ },
@@ -334,15 +481,21 @@ endif
 if neobundle#tap('vim-anzu')
     nmap n <Plug>(anzu-n-with-echo)zv
     nmap N <Plug>(anzu-N-with-echo)zv
-
+    call neobundle#untap()
 endif
+
+" Shougo/neocomplcache.vim
+if neobundle#tap('neocomplcache.vim')
+    let g:neocomplcache_enable_at_startup = 1
+  call neobundle#untap()
+endif
+" }}
 
 " tyru/caw.vim {{
 if neobundle#tap('caw.vim')
     function! neobundle#tapped.hooks.on_source(bundle)
         let g:caw_no_default_keymappings=1
     endfunction
-
     " Beggining of Line Comment Toggle
     nmap <Leader>cc <Plug>(caw:hatpos:toggle)
     vmap <Leader>cc <Plug>(caw:hatpos:toggle)
@@ -360,6 +513,25 @@ if neobundle#tap('caw.vim')
     "Break line and Comment
     nmap <Leader>co <Plug>(caw:jump:comment-next)
     nmap <Leader>cO <Plug>(caw:jump:comment-prev)
+    call neobundle#untap()
+endif
+" }}
+
+" itchyny/calendar.vim {{
+if neobundle#tap('calendar.vim')
+    function! neobundle#tapped.hooks.on_source(bundle)
+        let g:calendar_google_calendar=1
+        let g:calendar_google_task=1
+        let g:calendar_date_endian='big'
+        let g:calendar_frame='default'
+        AutocmdFT calendar call s:init_calendar()
+        function! s:init_calendar()
+            nmap <buffer>l <Plug>(calendar_next)
+            nmap <buffer>h <Plug>(calendar_prev)
+            nmap <buffer>e <Plug>(calendar_event)
+            highlight clear TrailingSpaces
+        endfunction
+    endfunction
     call neobundle#untap()
 endif
 " }}
@@ -389,8 +561,8 @@ if neobundle#tap('vim-startify')
         delcommand StartifyDebug
         delcommand SClose
     endfunction
-
     nnoremap [Unite], :<C-u>Startify<CR>
+    call neobundle#untap()
 endif
 " }}
 
@@ -445,7 +617,6 @@ if neobundle#tap('vim-shot-f')
     map F <Plug>(shot-f-F)
     call neobundle#untap()
 endif
-
 " }}
 
 " tyru/open-browser.vim {{
@@ -454,95 +625,15 @@ if neobundle#tap('open-browser.vim')
     vmap gx <Plug>(openbrowser-smart-search)
     call neobundle#untap()
 endif
-
 " }}
 
-" Etc Setting List {{{
-
-" Cscope add {{
-cs add ~/kanno/Tool/.cscope/View/cscope.out
-cs add ~/kanno/Tool/.cscope/Model/cscope.out
-cs add ~/kanno/Tool/.cscope/Etc/cscope.out
-cs add ~/kanno/Tool/.cscope/Framework/cscope.out
-cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
-"cs add ~/kanno/Tool/.gtags/Atc/GTAGS
-"cs add ~/kanno/Tool/.gtags/Nmsystem/GTAGS
-" }}
-
-" Cscope KeyMaphaya14busas {{
-"   's'   symbol: find all references to the token under cursor
-"   'g'   global: find global definition(s) of the token under cursor
-"   'c'   calls:  find all calls to the function name under cursor
-"   't'   text:   find all instances of the text under cursor
-"   'e'   egrep:  egrep search for the word under cursor
-"   'f'   file:   open the filename under cursor
-"   'i'   includes: find files that include the filename under cursor
-"   'd'   called: find functions that function under cursor calls
-nmap [Cscope]s :tab cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap [Cscope]g :tab cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap [Cscope]c :tab cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap [Cscope]t :tab cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap [Cscope]e :tab cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap [Cscope]f :tab cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap [Cscope]i :tab cs find i <C-R>=expand("<cfile>")<CR><CR>
-nmap [Cscope]d :tab cs find d <C-R>=expand("<cword>")<CR><CR>
-" }}
-
-" Set relativenumber or no relativenumber.
-nnoremap <silent> <Leader>rel :<C-u>set relativenumber! relativenumber?<CR>
-
-" Tab KeyMaps {{
-nnoremap <silent> [Tab]c :tablast <bar> tabnew %<CR>
-nnoremap <silent> [Tab]f :tablast <bar> tabnew .<CR>
-nnoremap <silent> [Tab]d :tabclose<CR>
-nnoremap <silent> [Tab]n :tabnext<CR>
-nnoremap <silent> [Tab]p :tabprevious<CR>
-" }}
-
-" Tab jump {{
-for n in range(1,9)
-    execute 'nnoremap <silent> [Tab]'.n ':<C-u>tabnext'.n.'<CR>'
-endfor
-" }}
-
-" gfの結果をタブ複製にする
-nnoremap gf :<C-u>execute 'tabfind ' .expand('<cfile>')<CR>
-
-" 最後のカーソル位置に戻る
-autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
-
-" Bufferが呼ばれたときに、選択したBufferに移動する
-au BufEnter * execute ":lcd " . expand("%:p:h")
-
-" :make実行後、自動でQuickfixウィンドウを開く
-autocmd MyAutoCmd QuickfixCmdPost make if len(getqflist()) != 0 | copen | endif
-
-" 最後のWindowのbuftypeがQuickFixであれば、自動で閉じる
-autocmd MyAutoCmd WinEnter * if winnr('$') == 1 && &buftype == 'quickfix' | quit | endif
-
-
-" hファイルの場合は、ifndef/define/endifを自動挿入
-au BufNewFile *.h call IncludeGuard() "{{
-function! IncludeGuard()
-let fl = getline(1)
-if fl =~ "^#if"
-    return
-endif
-let fileName = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-normal! gg
-execute "normal! i#ifndef " . fileName . ""
-execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
-
-endfunction
-" }}
-
-" Cvsdiff
+" functions {{{
+" Cvsdiff {{
 if exists("loaded_cvsdiff") || &cp
     finish
 endif
 let loaded_cvsdiff = 1
 com! -bar -nargs=? Cvsdiff :call s:Cvsdiff(<f-args>)
-
 function! s:Cvsdiff(...)
     colorscheme evening
     if a:0 > 1
@@ -550,7 +641,6 @@ function! s:Cvsdiff(...)
     else
         let rev = ''
     endif
-
     let ftype = &filetype
     let tmpfile = tempname()
     let cmd = "cat " . bufname("%") . " > " . tmpfile
@@ -562,32 +652,60 @@ function! s:Cvsdiff(...)
         echohl WarningMsg | echon cmd_output-
         return
     endif
-
     let cmd = "patch -R -p0 " . tmpfile . " " . tmpdiff
     let cmd_output = system(cmd)
     if v:shell_error && cmd_output != ""
         echohl WarningMsg | echon cmd_output-
         return
     endif
-
     if a:0 > 0 && a:1 == "v"
         exe "vert diffsplit" . tmpfile
     else
         exe "diffsplit" . tmpfile
     endif
-
     exe "set filetype=" . ftype
 endfunction
+" }} End of Cvsdiff
 
-" Goes to Another window
-nnoremap <Tab> <C-W>w
-" .vimrc Mapping List
-nnoremap <silent> <Leader>ev :<C-u>edit $MYVIMRC<CR>
-" vimhelp List
-nnoremap <silent> <Leader>h :<C-u>botright vs ~/.vim/bundle/help.jax<CR>
+" IncludeGuard {{
+function! IncludeGuard()
+let fl = getline(1)
+if fl =~ "^#if"
+    return
+endif
+let fileName = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+normal! gg
+execute "normal! i#ifndef " . fileName . ""
+execute "normal! o#define " . fileName .  "\<CR>\<CR>\<CR>\<CR>\<CR>"
+endfunction
+" }} End of IncludeGuard
 
-" Wrapped lines goes down/up to next row, rather than next line in file.
-nnoremap j gj
-nnoremap k gk
+" Command-line Window {{
+function! s:init_cmdwin()
+    setlocal nonumber
+    silent! 1,$-20 delete _ | call cursor('$', 0 )
+    nnoremap <silent><buffer>q  :<C-u>quit<CR>
+    nnoremap <silent><buffer><CR>   <CR>
 
-"}}} End of Etc Setting List
+    "Completiton.
+    inoremap <silent><buffer><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+    inoremap <silent><buffer><expr><C-p> pumvisible() ? "\<C-p>" : "\<C-o>0"\<UP>
+    inoremap <silent><buffer><expr><C-n> pumvisible() ? "\<C-n>" : "\<C-o>0"\<DOWN>
+    startinsert!
+endfunction
+" }} End of Command-line Window
+
+" CDPath {{
+function! s:CommandCompleteCPPath(argLead, cmdLine, cursorPos)
+    let l:pattern = substitute($HOME, '\\','\\\\','g')
+    return split(substitute(globpath(&cdpath, a:argLead . '*/'), l:pattern, '~', 'g' ),"\n" )
+endfunction
+function! s:CD(...)
+    if a:0 == 0 | execute 'cd ' . expand('%:p:h')
+    else        | execute 'cd ' . a:1           | endif
+    echo substitute(getcwd(), substitute($HOME, '\\', '\\\\', 'g'),'~','g')
+endfunction
+command! -complete=customlist,<SID>CommandCompleteCDPath -nargs=? CD call s:CD(<f-args>)
+" }} End of CDPath
+
+"}}} end of functions
