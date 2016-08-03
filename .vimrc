@@ -400,25 +400,65 @@ endif
 
 " itchyny/lightline.vim {{
 if neobundle#tap('lightline.vim')
+
     let g:lightline = {
-          \ 'colorscheme':'hybrid',
-          \ 'active': {
-          \   'left': [ ['mode', 'paste'], ['readonly', 'filename', 'modified'] ]
-          \ },
-          \ 'component_function': {
-          \   'mode': 'LightLineMode'
-          \ }
-          \ }
-    function! neobundle#tapped.hooks.on_source(bundle)
-        let g:unite_sorce_overwrite_statusline=0
-        let g:vimfiler_force_overwrite_statusline=0
+        \ 'colorscheme': 'hybrid',
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+        \ },
+        \ 'component_function': {
+        \   'modified': 'LightLineModified',
+        \   'readonly': 'LightLineReadonly',
+        \   'fugitive': 'LightLineFugitive',
+        \   'filename': 'LightLineFilename',
+        \   'fileformat': 'LightLineFileformat',
+        \   'filetype': 'LightLineFiletype',
+        \   'fileencoding': 'LightLineFileencoding',
+        \   'mode': 'LightLineMode'
+        \ }
+        \ }
+
+    function! LightLineModified()
+        return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+    endfunction
+
+    function! LightLineReadonly()
+        return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+    endfunction
+
+    function! LightLineFilename()
+        return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
+            \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+            \  &ft == 'unite' ? unite#get_status_string() :
+            \  &ft == 'vimshell' ? vimshell#get_status_string() :
+            \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+            \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
+    endfunction
+
+    function! LightLineFugitive()
+        if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+        return fugitive#head()
+    else
+        return ''
+    endif
+    endfunction
+
+    function! LightLineFileformat()
+        return winwidth(0) > 70 ? &fileformat : ''
+    endfunction
+
+    function! LightLineFiletype()
+        return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+    endfunction
+
+    function! LightLineFileencoding()
+        return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
     endfunction
 
     function! LightLineMode()
-          return  &ft == 'unite' ? 'Unite' :
-                  \ &ft == 'vimfiler' ? 'VimFiler' :
-                  \ winwidth(0) > 60 ? lightline#mode() : ''
-    endfunction
+        return winwidth(0) > 60 ? lightline#mode() : ''
+    endfunction neobundle#untap()
     call neobundle#untap()
 endif
 " }}
