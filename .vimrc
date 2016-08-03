@@ -176,7 +176,7 @@ set display=lastline " Display as much as possible of the last line.
 set noequalalways " Don't auto resize Window.
 set showcmd " Display input command.
 set showmatch "Briefly jump to the matching one.
-set ttytype=builtin_xterm " Setting the terminal type.
+"set ttytype=builtin_xterm " Setting the terminal type.
 set helpheight=12 "minimal intial height of the help window
 set helplang=ja " Setting the help language.
 set keywordprg=:help " Open vim internal help by k command
