@@ -159,6 +159,10 @@ call neobundle#begin(expand('~/.vim/bundle'))
 " }}} End of NeoBundle
 
 " Basic {{{
+if !has('gui_running')
+    set ttytype=builtin_xterm " Setting the terminal type.
+endif
+
 set encoding=japan "Sets the character encoding used inside Vim.
 set fileencodings=japan,utf-0,euc-jp,sjis "A list of character encodings.
 set termencoding=japan,utf-0,euc-jp,sjis "Automatically detected character encodings
@@ -183,7 +187,6 @@ set display=lastline " Display as much as possible of the last line.
 set noequalalways " Don't auto resize Window.
 set showcmd " Display input command.
 set showmatch "Briefly jump to the matching one.
-set ttytype=builtin_xterm " Setting the terminal type.
 set helpheight=12 "minimal intial height of the help window
 set helplang=ja " Setting the help language.
 set keywordprg=:help " Open vim internal help by k command
@@ -400,14 +403,15 @@ endif
 
 " itchyny/lightline.vim {{
 if neobundle#tap('lightline.vim')
+    let g:lightline={}
+    if neobundle#is_installed('lightline-hybrid.vim')
+        let g:lightline.colorscheme='hybrid'
+    endif
 
-    let g:lightline = {
-        \ 'colorscheme': 'hybrid',
-        \ 'mode_map': {'c': 'NORMAL'},
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
-        \ },
-        \ 'component_function': {
+    let g:lightline.mode_map={'c':'NORMAL'}
+    let g:lightline.active={'left':[ ['mode','paste'], ['fugitive','filename','currentfunc'], ] }
+    let g:lightline.active={'right':[ ['lineinfo'], ['percent'], ['fileformat','fileencoding','filetype'], ] }
+    let g:lightline.component_function = {
         \   'modified': 'LightLineModified',
         \   'readonly': 'LightLineReadonly',
         \   'fugitive': 'LightLineFugitive',
@@ -415,8 +419,7 @@ if neobundle#tap('lightline.vim')
         \   'fileformat': 'LightLineFileformat',
         \   'filetype': 'LightLineFiletype',
         \   'fileencoding': 'LightLineFileencoding',
-        \   'mode': 'LightLineMode'
-        \ }
+        \   'mode': 'LightLineMode',
         \ }
 
     function! LightLineModified()
@@ -457,8 +460,11 @@ if neobundle#tap('lightline.vim')
     endfunction
 
     function! LightLineMode()
-        return winwidth(0) > 60 ? lightline#mode() : ''
-    endfunction neobundle#untap()
+        return &ft == 'VimFiler' ? 'VimFiler' :
+        \ &ft == 'unite' ? 'Unite' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+    endfunction
+
     call neobundle#untap()
 endif
 " }}
