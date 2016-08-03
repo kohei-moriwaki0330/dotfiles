@@ -1,7 +1,14 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 02-Aug-2016.
+" Last Modified: 03-Aug-2016.
 " Source: https://github.com/kohei-moriwaki0330
+
+
+" Environment Defination {{{
+let g:is_windows=has('win16') || has('win32') || has('win64')
+let g:is_cygwin=has('win32unix')
+let g:is_unix=has('unix')
+" }}} End of Environment Defination
 
 " Prefix {{{
 " Leader
@@ -176,7 +183,7 @@ set display=lastline " Display as much as possible of the last line.
 set noequalalways " Don't auto resize Window.
 set showcmd " Display input command.
 set showmatch "Briefly jump to the matching one.
-"set ttytype=builtin_xterm " Setting the terminal type.
+set ttytype=builtin_xterm " Setting the terminal type.
 set helpheight=12 "minimal intial height of the help window
 set helplang=ja " Setting the help language.
 set keywordprg=:help " Open vim internal help by k command
@@ -228,9 +235,8 @@ NeoBundleLazy 'vim-scripts/Conque-GDB', {'on_cmd' : 'ConqueGdb'}
 " }}
 
 " Writing {{
-NeoBundle 'Shougo/neocomplcache.vim'
+NeoBundleLazy 'Shougo/neocomplcache.vim',{'autoload':{'insert': 1}}
 NeoBundleLazy 'tyru/caw.vim', {'on_map' : ['<Plug>(caw:']}
-
 " }}
 
 " Application {{
