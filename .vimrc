@@ -1,6 +1,6 @@
 " vimrc for Vim(Version:7.4)
 " Author: Kohei kanno.
-" Last Modified: 03-Aug-2016.
+" Last Modified: 10-Aug-2016.
 " Source: https://github.com/kohei-moriwaki0330
 
 
@@ -42,6 +42,8 @@ cs add ~/kanno/Tool/.cscope/Nmsystem/cscope.out
 " Wrapped lines goes down/up to next row, rather than next line in file.
 nnoremap j gj
 nnoremap k gk
+" Clear search highlight
+nnoremap <Esc><Esc> :noh<CR>
 " Goes to Another window
 nnoremap <Tab> <C-W>w
 " Open HelpText
@@ -162,10 +164,9 @@ call neobundle#begin(expand('~/.vim/bundle'))
 if !has('gui_running')
     set ttytype=builtin_xterm " Setting the terminal type.
 endif
-
 set encoding=japan "Sets the character encoding used inside Vim.
-set fileencodings=japan,utf-0,euc-jp,sjis "A list of character encodings.
-set termencoding=japan,utf-0,euc-jp,sjis "Automatically detected character encodings
+set fileencodings=japan,utf-8,euc-jp,sjis "A list of character encodings.
+set termencoding=japan,utf-8,euc-jp,sjis "Automatically detected character encodings
 set fileformats=unix,dos " This gives the end-of-line(<EOL>) formats.
 set title "Sets the title used inside Vim.
 set expandtab "Use the appropriate number of spaces to insert a <Tab>.
@@ -202,9 +203,12 @@ set diffopt+=iwhite
 set grepprg=internal "Program to use for the :grep command.
 set hidden " Display anather buffer when current buffer isn't saved.
 set spelllang=en,cjk "Spell checking language.
+set virtualedit=all "when to use virtual editing
+set nostartofline "commands move cursor to first non-blank in line
 "set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
+set iminsert=0 imsearch=0 "lmap or IM in Insert mode
 set wildmenu wildmode=list:longest,full "Shows all the vim options
 set wildignore& "A file that matches with one of these patterns is ignored
 set wildignore+=*.sw? "Vim swap files
@@ -214,12 +218,13 @@ set wildignore+=*.jar  "Java archives
 set wildignore+=*.pyc  "Pythons byte code
 set wildignore+=*.states "Pylint stats
 syntax enable
+"command:options : Current Settings options
 " }}} End of Basic
 
 " Plugins {{{
 runtime! plugins/*.vim
 
-" Neobundle {{
+" NeoBundle {{
 NeoBundleFetch 'Shougo/neobundle.vim'
 " }}
 
@@ -234,16 +239,15 @@ NeoBundleLazy 'Shougo/vimfiler.vim', {'depends' : 'Shougo/unite.vim', 'on_path' 
 
 " Document {{
 NeoBundle 'vim-jp/vimdoc-ja'
+" }}
+
+" Development {{
 NeoBundleLazy 'vim-scripts/Conque-GDB', {'on_cmd' : 'ConqueGdb'}
 " }}
 
 " Writing {{
 NeoBundleLazy 'Shougo/neocomplcache.vim',{'autoload':{'insert': 1}}
 NeoBundleLazy 'tyru/caw.vim', {'on_map' : ['<Plug>(caw:']}
-" }}
-
-" Application {{
-NeoBundleLazy 'itchyny/calendar.vim', {'commands' : ['Calendar']}
 " }}
 
 " Operator {{
@@ -569,25 +573,6 @@ if neobundle#tap('caw.vim')
 endif
 " }}
 
-" itchyny/calendar.vim {{
-if neobundle#tap('calendar.vim')
-    function! neobundle#tapped.hooks.on_source(bundle)
-        let g:calendar_google_calendar=1
-        let g:calendar_google_task=1
-        let g:calendar_date_endian='big'
-        let g:calendar_frame='default'
-        AutocmdFT calendar call s:init_calendar()
-        function! s:init_calendar()
-            nmap <buffer>l <Plug>(calendar_next)
-            nmap <buffer>h <Plug>(calendar_prev)
-            nmap <buffer>e <Plug>(calendar_event)
-            highlight clear TrailingSpaces
-        endfunction
-    endfunction
-    call neobundle#untap()
-endif
-" }}
-
 " vim-scripts/sudo.vim {{
 if neobundle#tap('sudo.vim')
     nnoremap <Leader>su :<C-u>e sudo:%<CR>
@@ -687,7 +672,7 @@ endif
 let loaded_cvsdiff = 1
 com! -bar -nargs=? Cvsdiff :call s:Cvsdiff(<f-args>)
 function! s:Cvsdiff(...)
-    colorscheme evening
+    "colorscheme evening
     if a:0 > 1
         let rev = a:2
     else
