@@ -272,6 +272,7 @@ NeoBundleLazy 'sgur/vim-textobj-parameter', {
 NeoBundle 'cocopon/lightline-hybrid.vim'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'osyo-manga/vim-brightest'
+NeoBundle 'cohama/lexima.vim'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'on_cmd' : 'IndentGuidesToggle'}
 " }}
 
