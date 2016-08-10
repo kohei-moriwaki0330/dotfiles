@@ -3,7 +3,6 @@
 " Last Modified: 10-Aug-2016.
 " Source: https://github.com/kohei-moriwaki0330
 
-
 " Environment Defination {{{
 let g:is_windows=has('win16') || has('win32') || has('win64')
 let g:is_cygwin=has('win32unix')
@@ -115,11 +114,10 @@ Autocmd BufWritePost *gvimrc if has('gui_running') source $MYVIMRC
 AutocmdFT help nnoremap <buffer> q <C-w>c
 AutocmdFT help nnoremap <buffer> ;q q
 AutocmdFT help nnoremap <buffer> Q q
-" 最後のカーソル位置に戻る
+" Return to the position of the end of the cursor.
 autocmd MyAutoCmd BufRead * silent! execute'normal! `"zv'
-" :make実行後、自動でQuickfixウィンドウを開く
+" After 「:make」Command run, open the quickfix window automatically
 autocmd MyAutoCmd QuickfixCmdPost make if len(getqflist()) != 0 | copen | endif
-" 最後のWindowのbuftypeがQuickFixであれば、自動で閉じる
 autocmd MyAutoCmd WinEnter * if winnr('$') == 1 && &buftype == 'quickfix' | quit | endif
 " Include Guard
 au BufNewFile *.h call IncludeGuard()
@@ -201,14 +199,17 @@ set cmdwinheight=5 "Number of screen lines to use for the command-line window.
 set completeopt-=preview "Do not use preview window
 set diffopt+=iwhite
 set grepprg=internal "Program to use for the :grep command.
+set confirm "ask what to do about unsaved/read-only files
 set hidden " Display anather buffer when current buffer isn't saved.
 set spelllang=en,cjk "Spell checking language.
 set virtualedit=all "when to use virtual editing
 set nostartofline "commands move cursor to first non-blank in line
 "set relativenumber "Show the relative line number for each line
 set cursorline "Emphasize the cursorline
+set cursorcolumn "highlight the screen column of the cursor
 set timeout timeoutlen=1000 ttimeoutlen=100 "Setting timeoutlent(<Leader>) or ttimeoutlen(Esc)
 set iminsert=0 imsearch=0 "lmap or IM in Insert mode
+set clipboard=unnamed,unnamedplus "use the clipboard as the unnamed register
 set wildmenu wildmode=list:longest,full "Shows all the vim options
 set wildignore& "A file that matches with one of these patterns is ignored
 set wildignore+=*.sw? "Vim swap files
